@@ -2,6 +2,13 @@
 #ifndef COLOR_H
 #define COLOR_H
 /*
+    include-gpro-color.h
+    Writes and reads color for the application.
+
+    Modified by: Tyler Sloss & Daniel VanRyn
+    Modified because: added, altered, and fixed functionality of code from "Ray Tracing in One Weekend" to work with the rest of program
+*/
+/*
 Ray Tracing in One Weekend. raytracing.github.io/books/RayTracingInOneWeekend.html
 Accessed 9 10. 2020.
 
@@ -13,6 +20,9 @@ Accessed 9 10. 2020.
 
 #include <iostream>
 
+/*
+Adapted from Ray Tracing in One Weekend, outputs color values for verification
+*/
 void write_color(std::ostream& out, vec3 pixel_color) {
     // Write the translated [0,255] value of each color component.
     out << static_cast<int>(255.999 * pixel_color.x) << ' '
@@ -21,7 +31,9 @@ void write_color(std::ostream& out, vec3 pixel_color) {
 }
 
 
-
+/*
+Adapted from Ray Tracing in One Weekend, identifies the color at a point on the ray
+*/
 vec3 ray_color(const ray& r) {
     float t = hit_sphere(vec3(0, 0, -1), 0.5, r);
     if (t > 0.0) {
