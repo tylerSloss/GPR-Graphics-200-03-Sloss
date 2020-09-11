@@ -106,6 +106,11 @@ inline floatv vec3sum(float3 v_sum, float3 const v_lh, float3 const v_rh)
 	return vec3init(v_sum, (v_lh[0] + v_rh[0]), (v_lh[1] + v_rh[1]), (v_lh[2] + v_rh[2]));
 }
 
+inline double dot(const vec3& u, const vec3& v) {
+	return u.x * v.x
+		+ u.y * v.y
+		+ u.z * v.z;
+}
 
 #endif	// !_GPRO_VECTOR_INL_
 #endif	// _GPRO_VECTOR_H_

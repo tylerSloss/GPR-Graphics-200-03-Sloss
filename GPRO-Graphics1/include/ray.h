@@ -13,6 +13,7 @@ public:
 
     vec3 origin() const { return orig; }
     vec3 direction() const { return dir; }
+  
 
     vec3 at(float t) const {
         vec3 temp(orig.x + t * dir.x,orig.y + t * dir.y, orig.z + t * dir.z);
