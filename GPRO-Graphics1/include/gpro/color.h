@@ -34,15 +34,15 @@ void write_color(std::ostream& out, vec3 pixel_color) {
 /*
 Adapted from Ray Tracing in One Weekend, identifies the color at a point on the ray
 */
-vec3 ray_color(const ray& r) {
-    float t = hit_sphere(vec3(0, 0, -1), 0.5, r);
-    if (t > 0.0) {
-        vec3 N = unit_vector(vec3(r.at(t).x, r.at(t).y,r.at(t).z - -1));
-        vec3 temp((N.x + 1) * 0.5f, (N.y + 1) * 0.5f, (N.z + 1) * 0.5f);
+vec3 ray_color(const ray& r, const hittable& world) {
+    hit_record rec;
+    if (world.hit(r, 0, infinity, rec)) {
+        vec3 temp((rec.normal.x + 1) * 0.5f, (rec.normal.y + 1) * 0.5f, (rec.normal.z + 1) * 0.5f);
         return temp;
     }
+
 	vec3 unit_direction = unit_vector(r.direction());
-	t = 0.5f * (unit_direction.y + 1.0f);
+    double t = 0.5 * (unit_direction.y + 1.0);
 	vec3 temp(((1.0f - t) * 1.0f + t * 0.5f), ((1.0f - t) * 1.0f + t * 0.7f), ((1.0f - t) * 1.0f + t * 1.0f));
 	return temp;
 }

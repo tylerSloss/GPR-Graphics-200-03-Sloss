@@ -47,6 +47,12 @@
     <ClInclude Include="..\..\..\include\gpro\hittable.h">
       <Filter>Header Files\gpro</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\gpro\hittable_list.h">
+      <Filter>Header Files\gpro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\gpro\rtweekend.h">
+      <Filter>Header Files\gpro</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\include\gpro\gpro-math\_inl\gproVector.inl">

@@ -161,6 +161,8 @@
     <ClInclude Include="..\..\..\include\gpro\color.h" />
     <ClInclude Include="..\..\..\include\gpro\gpro-math\gproVector.h" />
     <ClInclude Include="..\..\..\include\gpro\hittable.h" />
+    <ClInclude Include="..\..\..\include\gpro\hittable_list.h" />
+    <ClInclude Include="..\..\..\include\gpro\rtweekend.h" />
     <ClInclude Include="..\..\..\include\gpro\sphere.h" />
     <ClInclude Include="..\..\..\include\gpro\utilities.h" />
     <ClInclude Include="..\..\..\include\ray.h" />

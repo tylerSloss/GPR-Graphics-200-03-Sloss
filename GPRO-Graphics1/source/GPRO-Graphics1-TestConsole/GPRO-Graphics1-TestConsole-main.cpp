@@ -51,6 +51,9 @@ Accessed 9 10. 2020.
 
 #include "gpro/gpro-math/gproVector.h"
 #include "gpro/color.h"
+#include"gpro/hittable_list.h"
+#include "gpro/rtweekend.h"
+#include "gpro/sphere.h"
 
 
 void testVector()
@@ -117,6 +120,11 @@ int main(int const argc, char const* const argv[])
 	const int image_width = 400;
 	const int image_height = static_cast<int>(image_width / aspect_ratio);
 
+	// World
+	hittable_list world;
+	world.add(make_shared<sphere>(vec3(0, 0, -1), 0.5));
+	world.add(make_shared<sphere>(vec3(0, -100.5, -1), 100));
+
 	// Camera
 
 	float viewport_height = 2.0;
@@ -139,7 +147,7 @@ int main(int const argc, char const* const argv[])
 			float v = float(j) / (image_height - 1);
 			vec3 temp(lower_left_corner.x + u * horizontal.x + v * vertical.x - origin.x, lower_left_corner.y + u * horizontal.y + v * vertical.y - origin.y, lower_left_corner.z + u * horizontal.z + v * vertical.z - origin.z);
 			ray r(origin, temp);
-			vec3 pixel_color = ray_color(r);
+			vec3 pixel_color = ray_color(r, world);
 			write_color(file, pixel_color);
         }
     }
