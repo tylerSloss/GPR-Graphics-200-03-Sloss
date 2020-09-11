@@ -1,9 +1,25 @@
 #pragma once
 #ifndef RAY_H
 #define RAY_H
+/*
+    include-ray.h
+    ray class for more complex vector math.
+
+    Modified by: Tyler Sloss & Daniel VanRyn
+    Modified because: added, altered, and fixed functionality of code from "Ray Tracing in One Weekend" to work with the rest of program
+*/
+/*
+Ray Tracing in One Weekend. raytracing.github.io/books/RayTracingInOneWeekend.html
+Accessed 9 10. 2020.
+
+*/
+
 
 #include "gpro/gpro-math/gproVector.h"
 
+/*
+Adapted from Ray Tracing in One Weekend, data structure for more complex 3d vector math
+*/
 class ray {
 public:
     ray() {}

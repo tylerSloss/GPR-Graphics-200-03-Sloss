@@ -19,8 +19,8 @@
 	gproVector.h
 	Interface for vectors. Sets an example for C and C++ compatible headers.
 
-	Modified by: ____________
-	Modified because: ____________
+	Modified by: Tyler Sloss & Daniel VanRyn
+	Modified because: Fixing Arithmetic Overflow and adding a dot product function
 */
 
 #ifdef _GPRO_VECTOR_H_
@@ -106,10 +106,11 @@ inline floatv vec3sum(float3 v_sum, float3 const v_lh, float3 const v_rh)
 	return vec3init(v_sum, (v_lh[0] + v_rh[0]), (v_lh[1] + v_rh[1]), (v_lh[2] + v_rh[2]));
 }
 
+//a
 inline double dot(const vec3& u, const vec3& v) {
-	return u.x * v.x
-		+ u.y * v.y
-		+ u.z * v.z;
+	return static_cast<double>(u.x) * static_cast<double>(v.x)
+		+ static_cast<double>(u.y) * static_cast<double>(v.y)
+		+ static_cast<double>(u.z) * static_cast<double>(v.z);
 }
 
 #endif	// !_GPRO_VECTOR_INL_

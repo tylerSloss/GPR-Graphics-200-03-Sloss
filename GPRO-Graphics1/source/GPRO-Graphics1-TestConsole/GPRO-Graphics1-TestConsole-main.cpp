@@ -1,3 +1,20 @@
+//Author: Tyler Sloss & Daniel VanRyn
+//Class : GPR 200-03
+//Assignment : Lab 1: Hello modern graphics!
+//Date Assigned : 9/4/2020
+//Due Date : Friday, 12:45 pm
+//Description :
+//Using the tools and methods presented in the sterter repository and from the shader in a weekend tutorial
+//to learn the basic mechanics of shaders and graphical programming
+//Certification of Authenticity :
+//I certify that this is entirely my own work, except where I have given fullydocumented references to the work of others.I understand the definitionand
+//consequences of plagiarismand acknowledge that the assessor of this assignment
+//may, for the purpose of assessing this assignment :
+//	-Reproduce this assignment and provide a copy to another member of
+//	academic staff;and /or
+//	-Communicate a copy of this assignment to a plagiarism checking service
+//	(which may then retain a copy of this assignment on its database for
+//		the purpose of future plagiarism checking)
 /*
    Copyright 2020 Daniel S. Buckstein
 
@@ -19,7 +36,7 @@
 	Main entry point source file for a Windows console application.
 
 	Modified by: Tyler Sloss
-	Modified because: ____________
+	Modified because: Needed to add and manage internal values such as length and length squared as well as add certain includes for mathematical purposes
 */
 /*
 Ray Tracing in One Weekend. raytracing.github.io/books/RayTracingInOneWeekend.html
