@@ -19,6 +19,8 @@ Accessed 9 10. 2020.
 #include "utilities.h"
 
 #include <iostream>
+#include <gpro\hittable_list.h>
+#include <gpro\rtweekend.h>
 
 /*
 Adapted from Ray Tracing in One Weekend, outputs color values for verification
