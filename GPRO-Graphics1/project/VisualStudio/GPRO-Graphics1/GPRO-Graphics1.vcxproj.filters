@@ -38,6 +38,9 @@
     <ClInclude Include="..\..\..\include\ray.h">
       <Filter>Header Files\gpro</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\gpro\utilities.h">
+      <Filter>Header Files\gpro</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\include\gpro\gpro-math\_inl\gproVector.inl">
