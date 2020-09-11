@@ -44,7 +44,7 @@ vec3 ray_color(const ray& r, const hittable& world) {
     }
 
 	vec3 unit_direction = unit_vector(r.direction());
-    double t = 0.5 * (unit_direction.y + 1.0);
+    float t = static_cast<float>(0.5 * (unit_direction.y + 1.0));
 	vec3 temp(((1.0f - t) * 1.0f + t * 0.5f), ((1.0f - t) * 1.0f + t * 0.7f), ((1.0f - t) * 1.0f + t * 1.0f));
 	return temp;
 }
