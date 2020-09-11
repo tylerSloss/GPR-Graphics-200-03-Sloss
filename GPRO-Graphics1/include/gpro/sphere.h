@@ -20,15 +20,15 @@ public:
 
 bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
     vec3 oc(r.origin().x - center.x, r.origin().y - center.y, r.origin().z - center.z);
-    auto a = r.direction().length_squared();
-    auto half_b = dot(oc, r.direction());
-    auto c = oc.length_squared() - radius * radius;
-    auto discriminant = half_b * half_b - a * c;
+    float a = r.direction().length_squared();
+    float half_b = dot(oc, r.direction());
+    float c = oc.length_squared() - radius * radius;
+    float discriminant = half_b * half_b - a * c;
 
     if (discriminant > 0) {
-        auto root = sqrt(discriminant);
+        float root = sqrt(discriminant);
 
-        auto temp = (-half_b - root) / a;
+        float temp = (-half_b - root) / a;
         if (temp < t_max && temp > t_min) {
             rec.t = temp;
             rec.p = r.at(rec.t);
