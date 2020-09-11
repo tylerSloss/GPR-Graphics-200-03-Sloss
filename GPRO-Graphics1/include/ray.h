@@ -15,7 +15,8 @@ public:
     vec3 direction() const { return dir; }
 
     vec3 at(double t) const {
-        return orig + t*dir;
+        vec3 temp(orig.x + t * dir.x, orig.y + t * dir.y, orig.z + t * dir.z);
+        return temp;
     }
 
 public:
