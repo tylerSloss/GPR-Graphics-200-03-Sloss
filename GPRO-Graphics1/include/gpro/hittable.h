@@ -7,8 +7,8 @@
 struct hit_record {
     vec3 p;
     vec3 normal;
-    double t;
-    bool front_face;
+    float t = 0.0f;
+    bool front_face = true;
 
     inline void set_face_normal(const ray& r, const vec3& outward_normal) {
         front_face = dot(r.direction(), outward_normal) < 0;

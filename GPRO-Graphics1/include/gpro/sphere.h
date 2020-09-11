@@ -26,22 +26,22 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) cons
     auto discriminant = half_b * half_b - a * c;
 
     if (discriminant > 0) {
-        auto root = sqrt(discriminant);
+        float root = static_cast<float>(sqrt(discriminant));
 
-        auto temp = (-half_b - root) / a;
+        float temp = static_cast<float>((-half_b - root) / a);
         if (temp < t_max && temp > t_min) {
             rec.t = temp;
-            rec.p = r.at(rec.t);
-            vec3 outward_normal((static_cast<double>(rec.p.x) - static_cast<float>(center.x)) / radius, (static_cast<double>(rec.p.y) - static_cast<float>(center.y)) / radius, (static_cast<double>(rec.p.y) - static_cast<float>(center.y)) / radius);
+            rec.p = r.at(static_cast<float>(rec.t));
+            vec3 outward_normal(static_cast<float>((static_cast<double>(rec.p.x) - static_cast<float>(center.x)) / radius, (static_cast<double>(rec.p.y) - static_cast<double>(center.y)) / radius, (static_cast<double>(rec.p.y) - static_cast<float>(center.y)) / radius));
             rec.set_face_normal(r, outward_normal);
             return true;
         }
 
-        temp = (-half_b + root) / a;
+        temp = static_cast<float>((-half_b + root) / a);
         if (temp < t_max && temp > t_min) {
             rec.t = temp;
-            rec.p = r.at(rec.t);
-            vec3 outward_normal((static_cast<double>(rec.p.x) - static_cast<float>(center.x)) / radius, (static_cast<double>(rec.p.y) - static_cast<float>(center.y)) / radius, (static_cast<double>(rec.p.y) - static_cast<float>(center.y)) / radius);
+            rec.p = r.at(static_cast<float>(rec.t));
+            vec3 outward_normal(static_cast<float>((static_cast<double>(rec.p.x) - static_cast<float>(center.x)) / radius, (static_cast<double>(rec.p.y) - static_cast<float>(center.y)) / radius, (static_cast<double>(rec.p.y) - static_cast<float>(center.y)) / radius));
             rec.set_face_normal(r, outward_normal);
             return true;
         }
