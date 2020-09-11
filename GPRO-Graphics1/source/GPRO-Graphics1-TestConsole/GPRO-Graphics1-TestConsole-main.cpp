@@ -18,8 +18,13 @@
 	GPRO-Graphics1-TestConsole-main.c/.cpp
 	Main entry point source file for a Windows console application.
 
-	Modified by: ____________
+	Modified by: Tyler Sloss
 	Modified because: ____________
+*/
+/*
+Ray Tracing in One Weekend. raytracing.github.io/books/RayTracingInOneWeekend.html
+Accessed 9 10. 2020.
+
 */
 
 
@@ -28,6 +33,7 @@
 
 
 #include "gpro/gpro-math/gproVector.h"
+#include "gpro/color.h"
 
 
 void testVector()
@@ -56,6 +62,7 @@ void testVector()
 #ifdef __cplusplus
 // Includes for C++
 #include <fstream>
+#include <iostream>
 #include <string>
 #else   // !__cplusplus
 // includes for C
@@ -64,15 +71,16 @@ void testVector()
 
 
 
+
 int main(int const argc, char const* const argv[])
 {
 	testVector();
 
 #ifdef __cplusplus
-	std::ofstream file("openpls.txt"); // open file for writing
-	std::string test = "hello cpp";        // string to write 
-	file << test << std::endl;			// write string and newline
-	file.close();						// close file 
+	std::ofstream file("raytrace.ppm"); // open file for writing
+	//std::string test = "hello cpp";        // string to write 
+	
+	
 #else // !__cplusplus
 	FILE* fp = fopen("openpls.txt", "w"); // open file for writing
 	if (fp) 
@@ -84,7 +92,26 @@ int main(int const argc, char const* const argv[])
 	
 #endif // __cplusplus
 
+	// Image
 
+	const int image_width = 256;
+	const int image_height = 256;
+
+	// Render
+
+	file << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+
+	 for (int j = image_height-1; j >= 0; --j) {
+        std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
+        for (int i = 0; i < image_width; ++i) {
+			vec3 pixel_color(float(i) / (image_width - 1), float(j) / (image_height - 1), 0.25);
+			write_color(file, pixel_color);
+        }
+    }
+
+    std::cerr << "\nDone.\n";
+
+	file.close();						// close file 
 	printf("\n\n");
 	system("pause");
-}
+	}
