@@ -7,7 +7,7 @@
 
 class sphere : public hittable {
 public:
-    sphere() {}
+    sphere() { }
     sphere(vec3 cen, double r) : center(cen), radius(r) {};
 
     virtual bool hit(
@@ -15,7 +15,7 @@ public:
 
 public:
     vec3 center;
-    double radius;
+    double radius = 0;
 };
 
 bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
@@ -32,7 +32,7 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) cons
         if (temp < t_max && temp > t_min) {
             rec.t = temp;
             rec.p = r.at(rec.t);
-            vec3 outward_normal((rec.p.x - center.x) / radius, (rec.p.y - center.y) / radius, (rec.p.y - center.y) / radius);
+            vec3 outward_normal((static_cast<double>(rec.p.x) - static_cast<float>(center.x)) / radius, (static_cast<double>(rec.p.y) - static_cast<float>(center.y)) / radius, (static_cast<double>(rec.p.y) - static_cast<float>(center.y)) / radius);
             rec.set_face_normal(r, outward_normal);
             return true;
         }
@@ -41,7 +41,7 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) cons
         if (temp < t_max && temp > t_min) {
             rec.t = temp;
             rec.p = r.at(rec.t);
-            vec3 outward_normal((rec.p.x - center.x) / radius, (rec.p.y - center.y) / radius, (rec.p.y - center.y) / radius);
+            vec3 outward_normal((static_cast<double>(rec.p.x) - static_cast<float>(center.x)) / radius, (static_cast<double>(rec.p.y) - static_cast<float>(center.y)) / radius, (static_cast<double>(rec.p.y) - static_cast<float>(center.y)) / radius);
             rec.set_face_normal(r, outward_normal);
             return true;
         }
