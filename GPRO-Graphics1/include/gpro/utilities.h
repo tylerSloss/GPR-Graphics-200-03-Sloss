@@ -7,7 +7,7 @@
 
 vec3 unit_vector(vec3 dir)
 {
-	double scale = sqrt((dir.x * dir.x) + (dir.y * dir.y) + (dir.z * dir.z));
+	float scale = sqrt((dir.x * dir.x) + (dir.y * dir.y) + (dir.z * dir.z));
 	dir.x = dir.x / scale;
 	dir.y = dir.y / scale;
 	dir.z = dir.z / scale;

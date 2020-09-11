@@ -71,7 +71,6 @@ void testVector()
 
 
 
-
 int main(int const argc, char const* const argv[])
 {
 	testVector();
@@ -92,10 +91,24 @@ int main(int const argc, char const* const argv[])
 	
 #endif // __cplusplus
 
+	
+
 	// Image
 
-	const int image_width = 256;
-	const int image_height = 256;
+	const float aspect_ratio = 16.0f / 9.0f;
+	const int image_width = 400;
+	const int image_height = static_cast<int>(image_width / aspect_ratio);
+
+	// Camera
+
+	float viewport_height = 2.0;
+	float viewport_width = aspect_ratio * viewport_height;
+	float focal_length = 1.0;
+
+	vec3 origin = vec3(0, 0, 0);
+	vec3 horizontal = vec3(viewport_width, 0, 0);
+	vec3 vertical = vec3(0, viewport_height, 0);
+	vec3 lower_left_corner(origin.x - horizontal.x / 2 - vertical.x / 2 - 0, origin.y - horizontal.y / 2 - vertical.y / 2 - 0, origin.z - horizontal.z / 2 - vertical.z / 2 - focal_length);
 
 	// Render
 
@@ -104,7 +117,11 @@ int main(int const argc, char const* const argv[])
 	 for (int j = image_height-1; j >= 0; --j) {
         std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
         for (int i = 0; i < image_width; ++i) {
-			vec3 pixel_color(float(i) / (image_width - 1), float(j) / (image_height - 1), 0.25);
+			float u = float(i) / (image_width - 1);
+			float v = float(j) / (image_height - 1);
+			vec3 temp(lower_left_corner.x + u * horizontal.x + v * vertical.x - origin.x, lower_left_corner.y + u * horizontal.y + v * vertical.y - origin.y, lower_left_corner.z + u * horizontal.z + v * vertical.z - origin.z);
+			ray r(origin, temp);
+			vec3 pixel_color = ray_color(r);
 			write_color(file, pixel_color);
         }
     }

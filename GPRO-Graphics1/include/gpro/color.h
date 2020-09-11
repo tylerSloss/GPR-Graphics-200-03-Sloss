@@ -21,9 +21,10 @@ void write_color(std::ostream& out, vec3 pixel_color) {
 }
 
 vec3 ray_color(const ray& r) {
-    vec3 unit_direction = unit_vector(r.direction());
-    auto t = 0.5 * (unit_direction.y + 1.0);
-    return (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
+	vec3 unit_direction = unit_vector(r.direction());
+	float t = 0.5f * (static_cast<float>(unit_direction.y) + 1.0f);
+	vec3 temp(((1.0f - t) * 1.0f + t * 0.5f), ((1.0f - t) * 1.0f + t * 0.7f), ((1.0f - t) * 1.0f + t * 1.0f));
+	return temp;
 }
 
 #endif
