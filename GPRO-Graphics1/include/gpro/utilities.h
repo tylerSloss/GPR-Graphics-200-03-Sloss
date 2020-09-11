@@ -19,15 +19,15 @@ vec3 unit_vector(vec3 dir)
 
 bool hit_sphere(const vec3& center, double radius, const ray& r) {
 	vec3 oc(r.origin().x - center.x, r.origin().y - center.y, r.origin().z - center.z);
-	float a = dot(r.direction(), r.direction());
-	float b = 2.0 * dot(oc, r.direction());
-	float c = dot(oc, oc) - radius * radius;
-	float discriminant = b * b - 4 * a * c;
+	auto a = r.direction().length_squared();
+	auto half_b = dot(oc, r.direction());
+	auto c = oc.length_squared() - radius * radius;
+	auto discriminant = half_b * half_b - a * c;
 	if (discriminant < 0) {
-		return -1.0;
+		return false;
 	}
 	else {
-		return (-b - sqrt(discriminant)) / (2.0 * a);
+		return (-half_b - sqrt(discriminant)) / a;
 	}
 	return (discriminant > 0);
 }

@@ -109,7 +109,7 @@ int main(int const argc, char const* const argv[])
 	vec3 origin = vec3(0, 0, 0);
 	vec3 horizontal = vec3(viewport_width, 0, 0);
 	vec3 vertical = vec3(0, viewport_height, 0);
-	vec3 lower_left_corner(origin.x - horizontal.x / 2 - vertical.x / 2 - 0, origin.y - horizontal.y / 2 - vertical.y / 2 - 0, origin.z - horizontal.z / 2 - vertical.z / 2 - focal_length);
+	vec3 lower_left_corner((origin.x - horizontal.x / 2 - vertical.x / 2) - 0, (origin.y - horizontal.y / 2 - vertical.y / 2) - 0, (origin.z - horizontal.z / 2 - vertical.z / 2) - focal_length);
 
 	// Render
 

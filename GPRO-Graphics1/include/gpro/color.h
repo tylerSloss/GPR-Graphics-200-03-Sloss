@@ -26,11 +26,11 @@ vec3 ray_color(const ray& r) {
     float t = hit_sphere(vec3(0, 0, -1), 0.5, r);
     if (t > 0.0) {
         vec3 N = unit_vector(vec3(r.at(t).x, r.at(t).y,r.at(t).z - -1));
-        vec3 temp((N.x + 1) * 0.5, (N.y + 1) * 0.5, (N.z + 1) * 0.5);
+        vec3 temp((N.x + 1) * 0.5f, (N.y + 1) * 0.5f, (N.z + 1) * 0.5f);
         return temp;
     }
 	vec3 unit_direction = unit_vector(r.direction());
-	float t = 0.5f * (unit_direction.y + 1.0f);
+	t = 0.5f * (unit_direction.y + 1.0f);
 	vec3 temp(((1.0f - t) * 1.0f + t * 0.5f), ((1.0f - t) * 1.0f + t * 0.7f), ((1.0f - t) * 1.0f + t * 1.0f));
 	return temp;
 }
