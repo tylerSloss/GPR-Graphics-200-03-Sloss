@@ -10,10 +10,10 @@ vec3 unit_vector(vec3 dir)
 	double temp = pow(dir.x, 2);
 	temp += pow(dir.y, 2);
 	temp += pow(dir.z, 2);
-	float scale = sqrt(temp);
-	dir.x = dir.x / scale;
-	dir.y = dir.y / scale;
-	dir.z = dir.z / scale;
+	double scale = sqrt(temp);
+	dir.x = static_cast<float>(dir.x / scale);
+	dir.y = static_cast<float>(dir.y / scale);
+	dir.z = static_cast<float>(dir.z / scale);
 	return dir;
 }
 
