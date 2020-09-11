@@ -1,3 +1,4 @@
+#include "..\gproVector.h"
 /*
    Copyright 2020 Daniel S. Buckstein
 
@@ -62,10 +63,12 @@ inline vec3& vec3::operator +=(vec3 const& rh)
 	return *this;
 }
 
+
 inline vec3 const vec3::operator +(vec3 const& rh) const
 {
 	return vec3((x + rh.x), (y + rh.y), (z + rh.z));
 }
+
 
 #endif	// __cplusplus
 

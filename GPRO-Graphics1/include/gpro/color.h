@@ -1,6 +1,11 @@
 #pragma once
 #ifndef COLOR_H
 #define COLOR_H
+/*
+Ray Tracing in One Weekend. raytracing.github.io/books/RayTracingInOneWeekend.html
+Accessed 9 10. 2020.
+
+*/
 
 #include "gpro/gpro-math/gproVector.h"
 

@@ -74,7 +74,16 @@ union vec3
 
 	vec3& operator +=(vec3 const& rh);	// addition assignment operator (add other to this)
 
+	vec3 operator *(const vec3& u, const vec3& v) {
+		return vec3(u.x * v.x, u.y * v.y, u.z * v.z);
+	}	// multiplication assignment operator (multiply other to this)
+
+	vec3 operator *(double t, const vec3& v) {
+		return vec3(t * v.x, t * v.y, t * v.z);
+	}	// multiplication assignment operator (multiply other to this)
+
 	vec3 const operator +(vec3 const& rh) const;	// addition operator (get sum of this and another)
+
 
 #endif	// __cplusplus
 };
