@@ -48,14 +48,41 @@ vec4 myEffect2(in vec2 fragCoord, in vec2 resolution)
     return mix(layer1, layer2, layer2.a); //finally, combine the 2 layers to have the circle overlap the background
 }
 
+vec4 myEffect3(in vec2 fragCoord, in vec2 resolution)
+{
+    vec2 uv = fragCoord.xy;
+    vec2 uv2 = fragCoord / resolution;
+    float sizeC = iTime / 3.0;  //Changes the size over time
+    sizeC = cos(sizeC) + 1.0;	//using a cos wave to make it shrink and grow
+    vec2 circlePos = vec2(iResolution.x * sizeC * 0.36,iResolution.y * 0.5);  //puts circle to the middle of the screen
+    float radius = (0.25 * iResolution.y) * sizeC;  //radius is set so use sizeC for the size changing effect
+    float d = length(circlePos - uv) - radius; // selects only the circle 
+	float t = clamp(d, 0.0, 1.0);			   // to allow for layering
+    float alpha = 1.0;
+ 	//seeds color gradient based on 1/10 y reolution scale squares
+    vec2 uv3 = vec2( mod(fragCoord/resolution, resolution.y * 0.1) );
 
+    //Mathematically determines whether a region should be offset scaled to 1/10  
+    vec2 binaryCheck = trunc(vec2(mod(fragCoord.x, resolution.y * 0.2), mod(fragCoord.y, resolution.y * 0.2)) / vec2(resolution.y * 0.1, resolution.y * 0.1));
+    vec2 binaryAns = vec2(abs(binaryCheck.x - binaryCheck.y), abs(binaryCheck.x - binaryCheck.y));
+        
+    // Pixel color based on time and offset based on the checker pattern
+    vec2 uvTwo = (uv3 + (binaryAns * vec2(0.5, 0.5))) * cos(iTime+uv3.xy+vec2(0,2));
+    vec3 col = colorRGB(uvTwo, 0.0);   
+    
+    vec4 layer1 = colorRGBA(col,alpha);
+    vec3 color2 = 0.5 + 0.5*cos(iTime+uv2.xyx+vec3(0,2,4)); // color2 causes the rainbow changing effect used in the circle
+   	vec4 layer2 = colorRGBA(color2, alpha - t);
+    return mix(layer1, layer2, layer2.a); //finally, combine the 2 layers to have the circle overlap the background
+    
+}
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     // R, G, B, A => [0,1]
     //fragColor = myEffect0(fragCoord,iResolution.xy);
     //fragColor = myEffect1(fragCoord,iResolution.xy);
-    fragColor = myEffect2(fragCoord,iResolution.xy);
-    
+    //fragColor = myEffect2(fragCoord,iResolution.xy);
+    fragColor = myEffect3(fragCoord,iResolution.xy);
     
     // Normalized pixel coordinates (from 0 to 1)
    // vec2 uv = fragCoord/iResolution.xy;
