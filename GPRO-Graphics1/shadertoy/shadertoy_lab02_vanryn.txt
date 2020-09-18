@@ -1,0 +1,49 @@
+
+#define colorRGB	vec3
+#define colorRGBA	vec4
+
+//static gradient screen
+vec4 myEffect0(in vec2 fragCoord, in vec2 resolution)
+{
+    // Normalized pixel coordinates (from 0 to 1)
+    vec2 uv = fragCoord/resolution;
+
+    // Pixel color
+    vec3 color = colorRGB(uv, 0.0);
+	
+    //Fixed alpha
+    float alpha = 1.0;
+    
+    //Final color
+    return colorRGBA(color, alpha);
+}   
+
+//color changing grid squares
+vec4 myEffect1(in vec2 fragCoord, in vec2 resolution)
+{
+    //seeds color gradient based on 1/10 y reolution scale squares
+    vec2 uv = vec2( mod(fragCoord/resolution, resolution.y * 0.1) );
+
+    //Mathematically determines whether a region should be offset scaled to 1/10  
+    vec2 binaryCheck = trunc(vec2(mod(fragCoord.x, resolution.y * 0.2), mod(fragCoord.y, resolution.y * 0.2)) / vec2(resolution.y * 0.1, resolution.y * 0.1));
+    vec2 binaryAns = vec2(abs(binaryCheck.x - binaryCheck.y), abs(binaryCheck.x - binaryCheck.y));
+        
+    // Pixel color based on time and offset based on the checker pattern
+    vec2 uvTwo = (uv + (binaryAns * vec2(0.5, 0.5))) * cos(iTime+uv.xy+vec2(0,2));
+    vec3 col = colorRGB(uvTwo, 0.0);
+	
+    //Fixed alpha
+    float alpha = 1.0;
+    
+    //Final color
+    return colorRGBA(col, alpha);
+}  
+
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+
+    
+    // Output to screen
+    fragColor = myEffect1(fragCoord, iResolution.xy);
+}
