@@ -1,3 +1,7 @@
+
+#define colorRGB	vec3
+#define colorRGBA	vec4
+
 //static gradient screen
 vec4 myEffect0(in vec2 fragCoord, in vec2 resolution)
 {
