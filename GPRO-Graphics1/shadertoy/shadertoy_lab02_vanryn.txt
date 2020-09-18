@@ -39,6 +39,40 @@ vec4 myEffect1(in vec2 fragCoord, in vec2 resolution)
     return colorRGBA(col, alpha);
 }  
 
+//psychedelic!!
+vec4 myEffect3(in vec2 fragCoord, in vec2 resolution)
+{
+    //seeds color gradient based on 1/10 y reolution scale squares (oscillates with time)
+    vec2 uv = vec2( mod(fragCoord/resolution, resolution.y * 0.1 /* cos(iTime)*/) );
+
+    //Mathematically determines whether a region should be offset scaled to 1/10 y resolution squares (oscillates with time)
+    vec2 binaryCheck = trunc(vec2(mod(fragCoord.x, resolution.y * 0.2 * cos(iTime)), mod(fragCoord.y, resolution.y * 0.2 * cos(iTime))) / vec2(resolution.y * 0.1, resolution.y * 0.1));
+    vec2 binaryAns = vec2(abs(binaryCheck.x - binaryCheck.y), abs(binaryCheck.x - binaryCheck.y));
+        
+    // Pixel color based on time and offset based on the checker pattern
+    vec2 uvTwo = (uv + (binaryAns * vec2(0.5, 0.5))) * cos(iTime+uv.xy+vec2(0,2));
+    vec3 col = colorRGB(uvTwo, 0.0);
+	
+    //Fixed alpha
+    float alpha = 1.0;
+    
+    //determines the center of the circle
+    float moveRad = 60.0;
+    vec2 circleCore = vec2((resolution.x * 0.5) + (moveRad * cos(iTime * 8.0)), (resolution.y * 0.5) + (moveRad * sin(iTime)));
+    
+    //radius of the circle
+    float radius = 30.0 - 10.0 * sin(2.0 * iTime);
+    
+    //if in moving object, alter the color
+    if(radius > sqrt(pow(fragCoord.x - circleCore.x, 2.0) + pow(fragCoord.y - circleCore.y, 2.0)))
+    {
+   	col = colorRGB(fragCoord/resolution, 1);
+        alpha = 0.5;
+    }
+    
+    //Final color
+    return colorRGBA(col, alpha);
+}
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
