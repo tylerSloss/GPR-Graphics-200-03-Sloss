@@ -39,6 +39,24 @@ vec4 myEffect1(in vec2 fragCoord, in vec2 resolution)
     return colorRGBA(col, alpha);
 }  
 
+vec4 myEffect2(in vec2 fragCoord, in vec2 resolution)
+{
+  	vec2 uv = fragCoord.xy;
+    vec2 uv2 = fragCoord / resolution;
+    vec2 circlePos = iResolution.xy * 0.5;  //puts circle to the middle of the screen
+    float sizeC = iTime / 3.0;  //Changes the size over time
+    sizeC = cos(sizeC) + 1.0;	//using a cos wave to make it shrink and grow
+    float radius = (0.25 * iResolution.y) * sizeC;  //radius is set so use sizeC for the size changing effect
+    float d = length(circlePos - uv) - radius; // selects only the circle 
+	float t = clamp(d, 0.0, 1.0);			   // to allow for layering
+    float alpha = 1.0;
+   	vec3 color1 = colorRGB(0.0,0.0,0.0); //background color
+    vec4 layer1 = colorRGBA(color1,alpha);
+    vec3 color2 = 0.5 + 0.5*cos(iTime+uv2.xyx+vec3(0,2,4)); // color2 causes the rainbow changing effect used in the circle
+   	vec4 layer2 = colorRGBA(color2, alpha - t);
+    return mix(layer1, layer2, layer2.a); //finally, combine the 2 layers to have the circle overlap the background
+}
+
 //psychedelic!!
 vec4 myEffect3(in vec2 fragCoord, in vec2 resolution)
 {
