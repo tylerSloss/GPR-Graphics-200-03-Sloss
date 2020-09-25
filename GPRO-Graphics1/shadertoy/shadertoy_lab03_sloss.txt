@@ -58,6 +58,11 @@ float rand(vec2 co){
   return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
 
+float random_float(vec2 seed) 
+{
+ return clamp(rand(seed),-0.1,0.1);   
+}
+
 float lenSq(in vec2 x)
 {
  	return dot(x,x); 
@@ -113,7 +118,7 @@ vec4 calcColor(in vec4 rayDirection, in vec4 rayOrigin)
     // DUMMY RESULT: OUTPUT RAY DIRECTION AS-IS
     // -> what does the ray look like as color?  
     float scale = 1.0 / 100.0;
-    float t = hit_sphere(vec3(0.0,0.0,-1.0/*-2.0 + sin(iTime)*/),0.5,rayOrigin,rayDirection);
+    float t = hit_sphere(vec3(0.0,0.0,-2.0 + sin(iTime)),0.5,rayOrigin,rayDirection);
     if(t > 0.0)
     {
         vec3 N = unit_vector((rayOrigin + (t * rayDirection)).xyz - vec3(0,0,-1));
@@ -140,7 +145,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // viewing plane (viewport) info
     vec2 viewport, ndc, uv, resolutionInv;
     float aspect;
-    const float viewportHeight = 2.0, focalLength = 1.0;
+    const float viewportHeight = 2.0, focalLength = 1.0, samplesPerPixel = 200.0;
 
     // ray
     vec4 rayDirection, rayOrigin;
@@ -153,7 +158,14 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
   
     
     // color
-    fragColor = calcColor(rayDirection, rayOrigin);
+    vec4 pixelColor = calcColor(rayDirection,rayOrigin) / 2.0;
+    vec4 altRay = vec4(0.0);
+    for (float i = samplesPerPixel; i > 0.0; i -= 1.0)
+    {
+        altRay = vec4(rayDirection.x + random_float(vec2(iTime)) / samplesPerPixel ,rayDirection.y + random_float(vec2(iTime)) / samplesPerPixel,rayDirection.z,0.0);
+        pixelColor += calcColor(altRay,rayOrigin) / (2.0 * samplesPerPixel);   
+    }
+    fragColor = pixelColor;
         
 
     // TEST COLOR:
