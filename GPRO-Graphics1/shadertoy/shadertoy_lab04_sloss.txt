@@ -115,11 +115,69 @@ float calcAttenuation(pointLight lite, vec3 normal, vec3 position)
     return 1.0/(1.0 + sqrt(d)/lite.intensity + d/(lite.intensity * lite.intensity));
 }
 
-//uses a light object to determine the 
-vec3 calcLightDiffusion(in pointLight lite, vec3 normal, vec3 position)
+float calcSpecularIntensity(pointLight lite, vec3 normal, vec3 position, vec3 rayDirection)
 {
-    return (lite.color * calcDiffuseCoefficient(normal, position, lite.center.xyz) * calcAttenuation(lite, normal, position));
+    //speccoeff
+    float scale = lenSq(rayDirection);
+    float Ks = dot(reflect(normalize(lite.center.xyz - position), normal), vec3(rayDirection.x / scale, rayDirection.y / scale, rayDirection.z / scale));
+    //highlight exponent
+    float eh = 2.0;
+    eh = eh * eh; //4
+    //eh = eh * eh; //8
+    //eh = eh * eh; //16
+    //eh = eh * eh; //32
+    //eh = eh * eh; //64
+    
+    return pow(Ks, eh);
 }
+
+float blinnSpecularIntensity(pointLight lite, vec3 normal, vec3 position, vec3 rayDirection)
+{
+    //speccoeff
+    float scale = lenSq(rayDirection);
+    float Ks = dot(reflect(normalize(normalize(lite.center.xyz - position) + normalize(lite.center.xyz - position)), normal), vec3(rayDirection.x / scale, rayDirection.y / scale, rayDirection.z / scale));
+    //highlight exponent
+    float eh = 2.0;
+    eh = eh * eh; //4
+    //eh = eh * eh; //8
+    //eh = eh * eh; //16
+    //eh = eh * eh; //32
+    //eh = eh * eh; //64
+    eh = 4.0 * eh;
+    
+    return pow(Ks, eh);
+}
+
+//Lambertian Diffusion
+vec3 lambertianDiffusion(in pointLight lite, vec3 normal, vec3 position, vec3 color)
+{
+    return (lite.color * calcDiffuseCoefficient(normal, position, lite.center.xyz) * calcAttenuation(lite, normal, position) * color);
+}
+
+//Phong Reflectance
+vec3 phongReflectance(in pointLight lite, vec3 normal, vec3 position, vec3 color, vec3 rayDirection)
+{
+    float Ia = 0.2;
+    vec3 Ca = vec3(0.7, 0.1, 0.7);
+    vec3 Id = calcDiffuseCoefficient(normal, position, lite.center.xyz) * calcAttenuation(lite, normal, position);
+    float Is = calcSpecularIntensity(lite, normal, position, rayDirection);
+    vec3 Cs = vec3(0.9, 0.4, 0.3);
+    
+    return Ia * Ca + (Id * color + Is * Cs) * lite.color;
+}
+
+//Blinn-Phong Reflectance
+vec3 blinnPhongReflectance(in pointLight lite, vec3 normal, vec3 position, vec3 color, vec3 rayDirection)
+{
+    float Ia = 0.2;
+    vec3 Ca = vec3(0.7, 0.1, 0.7);
+    vec3 Id = calcDiffuseCoefficient(normal, position, lite.center.xyz) * calcAttenuation(lite, normal, position);
+    float Is = calcSpecularIntensity(lite, normal, position, rayDirection);
+    vec3 Cs = vec3(0.9, 0.4, 0.3);
+    
+    return Ia * Ca + (Id * color + Is * Cs) * lite.color;
+}
+
 
     
 
@@ -159,13 +217,19 @@ vec4 calcColor(in vec4 rayDirection, in vec4 rayOrigin)
         
         vec3 normal = 			
             //normalize(position - sphere.center.xyz);
-            (position - sphere.center.xyz) / sphere.radius;
-        return vec4(calcLightDiffusion(brightOne, normal, position) * (normal * 0.5 + 0.5), 1.0);
+        	(position - sphere.center.xyz) / sphere.radius;
+        
+        //Lambert
+        //return vec4(lambertianDiffusion(brightOne, normal, position, (normal * 0.5 + 0.5)), 1.0);
+        //Phong
+        return vec4(phongReflectance(brightOne, normal, position, (normal * 0.5 + 0.5), rayDirection.xyz), 1.0);
+        //Blinn-Phong
+        //return vec4(blinnPhongReflectance(brightOne, normal, position, (normal * 0.5 + 0.5), rayDirection.xyz), 1.0);
     }
 	
 	// BACKGROUND
 	const vec3 warm = vec3(0.8, 0.4, 0.2), cool = vec3(0.2, 0.4, 0.8);
-	//return vec4(mix(warm, cool, rayDirection.y), 1.0);
+	return vec4(mix(warm, cool, rayDirection.y), 1.0);
     return vec4(0.5);
 }
 
