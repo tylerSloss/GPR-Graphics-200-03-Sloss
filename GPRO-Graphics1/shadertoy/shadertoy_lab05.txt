@@ -165,6 +165,39 @@ void initRayOrtho(out sRay ray,
     initRayPersp(ray, eyePosition + sBasis(viewport.xy, 0.0), viewport);
 }
 
+color4 crossFade(in sViewport vp)
+{
+   	sCoord px = vp.pixelCoord;
+    
+    sDCoord res = iChannelResolution[0].xy;
+    sCoord loc 	= px / res ;
+    loc = 4.0 * loc; //zoom
+    
+    sDCoord res2 = iChannelResolution[1].xy;
+    sCoord loc2 	= px / res2 ;
+    loc2 = 1.0 * loc2; //zoom
+    
+    color4 txt1 = texture(iChannel0,loc); // full rgb
+    color4 txt2 = texture(iChannel1,loc2); // full rgb
+    return mix(txt1,txt2,0.5 * sin(iTime) + 0.5);
+}
+
+
+color4 distortion(in sViewport vp)
+{
+    sCoord px = vp.pixelCoord;
+    
+    sDCoord res = iChannelResolution[2].xy;
+    px.y += 8.0 * sin((px.x + iTime * 32.0)/ 16.0 );
+    sCoord loc 	= px / res ;
+    loc =  0.7 * loc; //zoom
+    
+    color4 txt1 = texture(iChannel2,loc); // full rgb
+    return txt1;
+    
+}
+
+
 
 //------------------------------------------------------------
 // RENDERING FUNCTIONS
@@ -219,5 +252,8 @@ void mainImage(out color4 fragColor, in sCoord fragCoord)
     // render
     initViewport(vp, viewportHeight, focalLength, fragCoord, iResolution.xy);
     initRayPersp(ray, eyePosition, vp.viewportPoint.xyz);
-    fragColor += calcColor(vp, ray);
+    //fragColor += calcColor(vp, ray);
+    //fragColor += crossFade(vp);
+    fragColor += distortion(vp);
+
 }
