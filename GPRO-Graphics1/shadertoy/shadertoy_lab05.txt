@@ -165,6 +165,58 @@ void initRayOrtho(out sRay ray,
     initRayPersp(ray, eyePosition + sBasis(viewport.xy, 0.0), viewport);
 }
 
+
+//------------------------------------------------------------
+//LIGHT INFO
+
+//sLight: light data structure
+//	  sCenter: the origin point of the light
+//    sColor: the color of the light
+//	  sIntensity: the intensity of the light for reflectance calculations
+
+struct sLight{
+	vec4 sCenter;
+    vec3 sColor;
+    float sIntensity;
+};
+    
+//initLight: initializes a light
+//	  light: output light
+//	  center: the origin point of the light
+//    color: the color of the light
+//	  intensity: the intensity of the light for reflectance calculations
+void initLight(out sLight light, in vec4 center, in vec3 color, in float intensity)
+{
+    light.sCenter = center;
+    light.sColor = color;
+    light.sIntensity = intensity;
+}
+
+//Diffusion
+vec3 calcDiffuseCoefficient(vec3 normal, vec3 position, vec3 liteCent)
+{
+    return (normal * normalize(liteCent - position));
+}
+
+//Attenuation
+float calcAttenuation(sLight lite, vec3 normal, vec3 position)
+{
+    float d = lengthSq(lite.sCenter.xyz - position);
+    return 1.0/(1.0 + sqrt(d)/lite.sIntensity + d/(lite.sIntensity * lite.sIntensity));
+}
+
+//Labertian Reflectance
+vec3 lambertianReflection(in sLight lite, vec3 normal, vec3 position)
+{
+    vec3 Id = calcDiffuseCoefficient(normal, position, lite.sCenter.xyz) * calcAttenuation(lite, normal, position);
+    return Id.bbb;
+}
+
+
+
+
+//Step 1 code
+
 color4 crossFade(in sViewport vp)
 {
    	sCoord px = vp.pixelCoord;
@@ -182,6 +234,7 @@ color4 crossFade(in sViewport vp)
     return mix(txt1,txt2,0.5 * sin(iTime) + 0.5);
 }
 
+//Step 2 code
 
 color4 distortion(in sViewport vp)
 {
@@ -202,7 +255,21 @@ color4 distortion(in sViewport vp)
     
 }
 
+//Step 3 code
 
+color4 lighting(in sViewport vp, in sRay ray)
+{
+   	sCoord px = vp.pixelCoord;
+    sLight lite;
+    initLight(lite, vec4(400.0 + 300.0 * sin(iTime), 225.0 + 170.0 * cos(iTime), 100.0, 0), vec3(1.0, 1.0, 1.0), 10000.0);
+    vec3 normal = vec3(0, 0, 1);
+    
+    sDCoord res = iChannelResolution[3].xy;
+    sCoord loc 	= px / res ;
+    loc = 1.0 * loc; //zoom
+    
+    return (texture(iChannel3,loc)) * color4(lambertianReflection(lite, normal, vec3(px.x, px.y, 0.0)), 0.0) * color4(lite.sColor, 0.0);
+}
 
 
 //------------------------------------------------------------
@@ -260,6 +327,6 @@ void mainImage(out color4 fragColor, in sCoord fragCoord)
     initRayPersp(ray, eyePosition, vp.viewportPoint.xyz);
     //fragColor += calcColor(vp, ray);
     //fragColor += crossFade(vp);
-    fragColor += distortion(vp);
-
+    //fragColor += distortion(vp);
+	fragColor += lighting(vp, ray);
 }
