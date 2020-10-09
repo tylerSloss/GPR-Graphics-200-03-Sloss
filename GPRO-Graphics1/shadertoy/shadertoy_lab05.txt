@@ -165,7 +165,8 @@ void initRayOrtho(out sRay ray,
     initRayPersp(ray, eyePosition + sBasis(viewport.xy, 0.0), viewport);
 }
 
-
+//student added code
+//
 //------------------------------------------------------------
 //LIGHT INFO
 
@@ -192,20 +193,29 @@ void initLight(out sLight light, in vec4 center, in vec3 color, in float intensi
     light.sIntensity = intensity;
 }
 
-//Diffusion
+//calcDiffusionCoefficient: calculates the diffuse coefficent
+//	  normal: the normal of the surface at the position
+//	  position: position of the currently checked point
+//	  liteCent: the center of the light
 vec3 calcDiffuseCoefficient(vec3 normal, vec3 position, vec3 liteCent)
 {
     return (normal * normalize(liteCent - position));
 }
 
-//Attenuation
+//calcAttenuation: calculates the attenuation of a light on a surface
+//	  lite: the light being calculated for
+//	  normal: the normal of the surface at the position
+//	  position: position of the currently checked point
 float calcAttenuation(sLight lite, vec3 normal, vec3 position)
 {
     float d = lengthSq(lite.sCenter.xyz - position);
     return 1.0/(1.0 + sqrt(d)/lite.sIntensity + d/(lite.sIntensity * lite.sIntensity));
 }
 
-//Labertian Reflectance
+//lambertianReflection: calculates the Lambertian Reflectance value to be multiplied by a surface color and light color
+//	  lite: the light being calculated for
+//	  normal: the normal of the surface at the position
+//	  position: position of the currently checked point
 vec3 lambertianReflection(in sLight lite, vec3 normal, vec3 position)
 {
     vec3 Id = calcDiffuseCoefficient(normal, position, lite.sCenter.xyz) * calcAttenuation(lite, normal, position);
@@ -215,41 +225,60 @@ vec3 lambertianReflection(in sLight lite, vec3 normal, vec3 position)
 
 
 
-//Step 1 code
+//Step 1 code: cross fade
 
+//crossFade: uses the viewport to sample and crossfade two textures
+//	  vp: image viewport
 color4 crossFade(in sViewport vp)
 {
    	sCoord px = vp.pixelCoord;
     
+    //texture 1
     sDCoord res = iChannelResolution[0].xy;
     sCoord loc 	= px / res ;
     loc = 4.0 * loc; //zoom
     
+    //texture 2
     sDCoord res2 = iChannelResolution[3].xy;
     sCoord loc2 	= px / res2 ;
     loc2 = 1.0 * loc2; //zoom
     
+    //find and mix textures based on sin(iTime)
     color4 txt1 = texture(iChannel0,loc); // full rgb
     color4 txt2 = texture(iChannel3,loc2); // full rgb
     return mix(txt1,txt2,0.5 * sin(iTime) + 0.5);
 }
 
-//Step 2 code
 
+//Step 2 code: distored image
+
+//distort: distort an xy coord pair based on the magnitude, speed, and frequency reduction
+//	  loc: location to be altered
+//	  mag: magnitude of waves
+//	  speed: speed of waves moving across the image
+//	  reduction: reduces the frequency of waves
 void distort(out vec2 loc, float mag, float speed, float reduction)
 {
-    loc.y += mag * sin((loc.x + iTime * speed)/reduction);
+    loc.y += mag * sin(loc.x/reduction + iTime * speed);
 }
 
+//distortion: distort and wormhole a texture
+//	  vp: image viewport
 color4 distortion(in sViewport vp)
 {
+    //current pixel
     sCoord px = vp.pixelCoord;
+    //center point
     vec2 pt = vec2(320.0,180.0);
+    //starting zoom
     float zoom = 0.7;
+    
+    //wormhole
     float wormHoleDistance = 10000.0;
     if (lengthSq(px - pt) < wormHoleDistance)
     zoom = zoom * 10000.0 / (wormHoleDistance - lengthSq(px - pt));
     
+    //scale, distort and zoom
     sDCoord res = iChannelResolution[2].xy;
     distort(px, 8.0, 16.0, 32.0);
     sCoord loc 	= px / res ;
@@ -260,29 +289,41 @@ color4 distortion(in sViewport vp)
     
 }
 
-//Step 3 code
+//Step 3 code: lighting
 
+//lighting: uses above light and reflectance code to circle a light above a texture
+//	  vp: image viewport
+//	  ray: ray from the camera
 color4 lighting(in sViewport vp, in sRay ray)
 {
    	sCoord px = vp.pixelCoord;
+    
+    //circling white light
     sLight lite;
     initLight(lite, vec4(400.0 + 300.0 * sin(iTime), 225.0 + 170.0 * cos(iTime), 100.0, 0), vec3(1.0, 1.0, 1.0), 10000.0);
     vec3 normal = vec3(0, 0, 1);
     
+    //scale and zoom
     sDCoord res = iChannelResolution[3].xy;
     sCoord loc 	= px / res ;
     loc = 1.0 * loc; //zoom
     
+    //multiply in reflectance value and light color
     return (texture(iChannel3,loc)) * color4(lambertianReflection(lite, normal, vec3(px.x, px.y, 0.0)), 0.0) * color4(lite.sColor, 0.0);
 }
 
-//Step 4 code
+//Step 4 code: cubemap
 
+//cubemap: spins and distorts a cubemap
+//	  vp: image viewport
+//	  ray: ray from camera
 color4 cubemap(in sViewport vp, in sRay ray)
 {
+    //distort ray with waves
     vec3 cubeLoc = ray.direction.xyz;
     distort(cubeLoc.xy, 0.25, 1.0, 0.25);
     
+    //rotate ray based on iTime
     mat2 rotationMatrix = mat2(cos(iTime), -sin(iTime), sin(iTime), cos(iTime));
     cubeLoc.xz = cubeLoc.xz * rotationMatrix;
     
