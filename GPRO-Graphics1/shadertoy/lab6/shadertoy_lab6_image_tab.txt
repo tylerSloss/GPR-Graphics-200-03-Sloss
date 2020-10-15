@@ -10,6 +10,7 @@
 void mainImage(out color4 fragColor, in sCoord fragCoord)
 {
     float weights[3] = float[3](1.0,2.0,1.0);
+    vec4 def1 = vec4(1.0, 1.0, 1.0, 1.0);
     
     // setup
     // test UV for input image
@@ -18,4 +19,24 @@ void mainImage(out color4 fragColor, in sCoord fragCoord)
     // TESTING
     // set iChannel0 to 'Misc/Buffer A' and fetch sample
     fragColor = texture(iChannel0, uv);
+    
+    //Add - verage
+    /*
+    fragColor = (texture(iChannel2, uv) + texture(iChannel1, uv) + texture(iChannel0, uv)) / 3.0;
+    /**/
+    
+    //MIX
+    /*
+    fragColor = mix(texture(iChannel0, uv), texture(iChannel2, uv), texture(iChannel2, uv).a);
+    /**/
+    
+    //SCREEN door
+    /*
+    fragColor = def1 - (def1 - texture(iChannel0, uv)) * (def1 - texture(iChannel2, uv));
+    /**/
+    
+    //MULTIPLY
+    /*
+    fragColor = texture(iChannel0, uv) * texture(iChannel2, uv);
+    /**/
 }
