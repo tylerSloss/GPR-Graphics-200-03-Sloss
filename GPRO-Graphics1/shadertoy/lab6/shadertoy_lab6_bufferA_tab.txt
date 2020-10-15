@@ -39,5 +39,14 @@ void mainImage(out color4 fragColor, in sCoord fragCoord)
     // render
     initViewport(vp, viewportHeight, focalLength, fragCoord, iResolution.xy);
     initRayPersp(ray, eyePosition, vp.viewportPoint.xyz);
-    fragColor += calcColor(vp, ray);
+    //
+    
+    vec3 cubeLoc = ray.direction.xyz;
+    
+    //rotate ray based on iTime
+    mat2 rotationMatrix = mat2(cos(iTime), -sin(iTime), sin(iTime), cos(iTime));
+    cubeLoc.xz = cubeLoc.xz * rotationMatrix;
+    
+    
+    fragColor += texture(iChannel0, cubeLoc);
 }
