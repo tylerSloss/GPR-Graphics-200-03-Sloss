@@ -1,9 +1,8 @@
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    
-    float jump = 0.003;
-    float xJump = 1.0 / iResolution.x;
-    float yJump = 1.0 / iResolution.y;
+    //calc for single pixel
+    float xJump = 1.0 / iResolution.x; // inverse resolution x
+    float yJump = 1.0 / iResolution.y; // inverse resolution y
     
     // setup
     // test UV for input image
@@ -14,8 +13,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     fragColor = texture(iChannel1, uv);
     
     //for 3x3
-    float weights[3] = float[3](1.0,2.0,4.0);
-    float weights2[6] = float[6](1.0,4.0,7.0,16.0,26.0,41.0);
+    float weights[3] = float[3](1.0,2.0,4.0); // 3x3 kernal
+    float weights2[6] = float[6](1.0,4.0,7.0,16.0,26.0,41.0); // 5x5 kernal
     /*fragColor = (
         texture(iChannel1, vec2(uv.x - xJump, uv.y + yJump)) * weights[0] +
         texture(iChannel1, vec2(uv.x, uv.y + yJump)) * weights[1] +
@@ -29,35 +28,40 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         ) / 16.0; */
                                  
 fragColor = (
+    // Row 1 of 5x5 kernal
         texture(iChannel1, vec2(uv.x - 2.0*xJump, uv.y + 2.0*yJump)) * weights2[0] +
 		texture(iChannel1, vec2(uv.x - xJump, uv.y + 2.0*yJump)) * weights2[1] +                                 
         texture(iChannel1, vec2(uv.x, uv.y + 2.0*yJump)) * weights2[2] +
         texture(iChannel1, vec2(uv.x + xJump, uv.y + 2.0*yJump)) * weights2[1] +
         texture(iChannel1, vec2(uv.x + 2.0*xJump, uv.y + 2.0*yJump)) * weights2[0] +
-        
-       
+    
+    // Row 2 of 5x5
         texture(iChannel1, vec2(uv.x - 2.0*xJump, uv.y + yJump)) * weights2[1] +
 		texture(iChannel1, vec2(uv.x - xJump, uv.y + yJump)) * weights2[3] +                                 
         texture(iChannel1, vec2(uv.x, uv.y + yJump)) * weights2[4] +
         texture(iChannel1, vec2(uv.x + xJump, uv.y + yJump)) * weights2[3] +
         texture(iChannel1, vec2(uv.x + 2.0*xJump, uv.y + yJump)) * weights2[1] +
-        
+     
+    // Row 3 of 5x5
         texture(iChannel1, vec2(uv.x - 2.0*xJump, uv.y)) * weights2[2] +
 		texture(iChannel1, vec2(uv.x - xJump, uv.y)) * weights2[4] +                                 
         texture(iChannel1, vec2(uv.x, uv.y)) * weights2[5] +
         texture(iChannel1, vec2(uv.x + xJump, uv.y)) * weights2[4] +
         texture(iChannel1, vec2(uv.x + 2.0*xJump, uv.y)) * weights2[2] +
-        
+    
+    // Row 4 of 5x5    
         texture(iChannel1, vec2(uv.x - 2.0*xJump, uv.y - yJump)) * weights2[1] +
 		texture(iChannel1, vec2(uv.x - xJump, uv.y - yJump)) * weights2[3] +                                 
         texture(iChannel1, vec2(uv.x, uv.y - yJump)) * weights2[4] +
         texture(iChannel1, vec2(uv.x + xJump, uv.y - yJump)) * weights2[3] +
         texture(iChannel1, vec2(uv.x + 2.0*xJump, uv.y - yJump)) * weights2[1] +
-        
+     
+    // Row 5 of 5x5
         texture(iChannel1, vec2(uv.x - 2.0*xJump, uv.y - 2.0*yJump)) * weights2[0] +
 		texture(iChannel1, vec2(uv.x - xJump, uv.y - 2.0*yJump)) * weights2[1] +                                 
         texture(iChannel1, vec2(uv.x, uv.y - 2.0*yJump)) * weights2[2] +
         texture(iChannel1, vec2(uv.x + xJump, uv.y - 2.0*yJump)) * weights2[1] +
         texture(iChannel1, vec2(uv.x + 2.0*xJump, uv.y -2.0*yJump)) * weights2[0] 
-        ) / 273.0;                                 
+        ) / 273.0;           
+    
 }
