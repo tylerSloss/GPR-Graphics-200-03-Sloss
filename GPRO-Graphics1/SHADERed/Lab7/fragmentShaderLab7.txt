@@ -1,0 +1,17 @@
+#version 300 es 
+//#version 450 (glsl version) 
+#ifdef GL_ES
+precision highp float;
+#endif //GL_ES
+
+layout (location = 0) out vec4 rtFragColor;
+//out vec4 rtFragColor;
+
+//VARYING 
+in vec4 vColor;
+
+void main()
+{
+	//rtFragColor = vec4(0.5,1.0,0.0,1.0);
+	rtFragColor = vColor;
+}

@@ -1,0 +1,21 @@
+#version 300 es 
+//#version 450 (glsl version) 
+
+// MAIN DUTY: processing vertex attributes
+// 	3D point in space
+// 	normal vector
+// 	uv: texture coordinate
+
+layout (location = 0) in vec4 aPosition;
+
+//VARYING 
+out vec4 vColor;
+
+void main()
+{
+	//REQUIRED: write to this variable:
+	gl_Position = aPosition;
+	
+	//vColor = vec4(1.0,0.5,0.0,1.0);
+	vColor = aPosition;
+}
