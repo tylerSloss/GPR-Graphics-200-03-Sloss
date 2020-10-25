@@ -244,6 +244,90 @@ void initSphere(out sSphere sphere, in vec3 center, in float radius)
     sphere.radius = radius;
 }
 
+
+float calcSpecularIntensity(sLight lite, vec3 normal, vec3 position, vec3 rayDirection)
+{
+    //speccoeff
+    float scale = lengthSq(rayDirection);
+    float Ks = dot(reflect(normalize(lite.sCenter.xyz - position), normal), vec3(rayDirection.x / scale, rayDirection.y / scale, rayDirection.z / scale));
+    //highlight exponent
+    float eh = 2.0;
+    eh = eh * eh; //4
+    //eh = eh * eh; //8
+    //eh = eh * eh; //16
+    //eh = eh * eh; //32
+    //eh = eh * eh; //64
+    
+    return pow(Ks, eh);
+}
+
+float blinnSpecularIntensity(sLight lite, vec3 normal, vec3 position, vec3 rayDirection)
+{
+    //speccoeff
+    float scale = lengthSq(rayDirection);
+    float Ks = dot(reflect(normalize(normalize(lite.sCenter.xyz - position) + normalize(lite.sCenter.xyz - position)), normal), vec3(rayDirection.x / scale, rayDirection.y / scale, rayDirection.z / scale));
+    //highlight exponent
+    float eh = 2.0;
+    eh = eh * eh; //4
+    //eh = eh * eh; //8
+    //eh = eh * eh; //16
+    //eh = eh * eh; //32
+    //eh = eh * eh; //64
+    eh = 4.0 * eh;
+    
+    return pow(Ks, eh);
+}
+
+//Lambertian Diffusion
+vec3 lambertianDiffusion(in sLight lite, vec3 normal, vec3 position, vec3 color)
+{
+    return (lite.sColor * calcDiffuseCoefficient(normal, position, lite.sCenter.xyz) * calcAttenuation(lite, normal, position) * color);
+}
+
+//Labertian Reflectance
+vec3 lambertianReflection(in sLight lite, vec3 normal, vec3 position, vec3 color)
+{
+    vec3 Id = calcDiffuseCoefficient(normal, position, lite.sCenter.xyz) * calcAttenuation(lite, normal, position);
+    return Id;
+}
+
+//Phong Reflectance
+vec3 phongReflectance(in sLight lite, vec3 normal, vec3 position, vec3 color, vec3 rayDirection)
+{
+    float Ia = 0.2;
+    vec3 Ca = vec3(0.7, 0.1, 0.7);
+    vec3 Id = calcDiffuseCoefficient(normal, position, lite.sCenter.xyz) * calcAttenuation(lite, normal, position);
+    float Is = calcSpecularIntensity(lite, normal, position, rayDirection);
+    vec3 Cs = vec3(0.9, 0.4, 0.3);
+    
+    return Ia * Ca + (Id * color + Is * Cs) * lite.sColor;
+}
+
+//Blinn-Phong Reflectance
+vec3 blinnPhongReflectance(in sLight lite, vec3 normal, vec3 position, vec3 color, vec3 rayDirection)
+{
+    float Ia = 0.2;
+    vec3 Ca = vec3(0.7, 0.1, 0.7);
+    vec3 Id = calcDiffuseCoefficient(normal, position, lite.sCenter.xyz) * calcAttenuation(lite, normal, position);
+    float Is = calcSpecularIntensity(lite, normal, position, rayDirection);
+    vec3 Cs = vec3(0.9, 0.4, 0.3);
+    
+    return Ia * Ca + (Id * color + Is * Cs) * lite.sColor;
+}
+
+vec3 lightCombo(in sLight lite, vec3 diffuseInt, vec3 reflectionColor, vec3 specIntensity, vec3 specReflecColor)
+{
+    vec3 combo = (diffuseInt * reflectionColor + specIntensity * specReflecColor) * lite.sColor;
+    return combo;
+}
+    
+vec3 combineLight(vec3 combo1, vec3 combo2, vec3 combo3)
+{
+   float Ia = 0.2;
+   vec3 Ca = vec3(0.7, 0.1, 0.7); 
+   return (Ia * Ca) + (combo1 + combo2 + combo3); 
+}
+
 //------------------------------------------------------------
 /*
 // GLSL FRAGMENT SHADER STRUCTURE WITH COMMON TAB
