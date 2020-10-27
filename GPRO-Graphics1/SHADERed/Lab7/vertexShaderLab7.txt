@@ -7,6 +7,13 @@
 // 	uv: texture coordinate
 
 layout (location = 0) in vec4 aPosition;
+//in vec4 aPosition
+
+//TRANSFORM UNIFOMS
+uniform mat4 uModelMat;
+uniform mat4 uViewMat;
+uniform mat4 uProjMat;
+uniform mat4 uViewProjMat;
 
 //VARYING 
 out vec4 vColor;
@@ -14,7 +21,25 @@ out vec4 vColor;
 void main()
 {
 	//REQUIRED: write to this variable:
-	gl_Position = aPosition;
+	//Problem: gl_Position is in "clip_space"
+	//problem: aPosition is in "object_space"	
+	//gl_Position = aPosition;
+	
+	//postition in world space (not yet correct)
+	vec4 pos_world = uModelMat * aPosition;
+	//gl_Position = pos_world;
+	
+	//positon in camera space
+	vec4 pos_view = uViewMat * pos_world;
+	//vec4 pos_view = uViewMat * uModelMat * aPosition;
+	//gl_Position = pos_view;
+	
+	//position in clip space
+	vec4 pos_clip = uProjMat * pos_view;
+	//vec4 pos_clip = uViewProjMat * pos_world;
+	//vec4 pos_clip = uViewProjMat * uModelMat * aPosition;
+	
+	gl_Position = pos_clip;
 	
 	//vColor = vec4(1.0,0.5,0.0,1.0);
 	vColor = aPosition;
