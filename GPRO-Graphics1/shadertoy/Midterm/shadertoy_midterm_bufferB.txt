@@ -1,5 +1,74 @@
 // GLSL STARTER CODE BY DANIEL S. BUCKSTEIN
-//  -> IMAGE TAB (final)
+//  -> BUFFER A TAB (scene)
+
+//------------------------------------------------------------
+// RENDERING FUNCTIONS
+
+// calcColor: calculate the color of current pixel
+//	  vp:  input viewport info
+//	  ray: input ray info
+color4 calcColor(in sViewport vp, in sRay ray)
+{
+    // test inputs
+    //return color4(ray.direction.xyz == vp.viewportPoint.xyz); // pass
+    //return color4(lengthSq(vp.viewportPoint.xy) >= 0.25); // pass
+    //return color4(vp.uv, 0.0, 0.0);
+    //return color4(vp.ndc, 0.0, 0.0);
+    //return asPoint(sBasis(vp.viewportPoint.xy, -vp.viewportPoint.z));
+    
+    //SCENE
+    sSphere sphere;
+    initSphere(sphere, vec3(0.0,0.0,-4.0), 0.5);
+    sLight brightOne,brightTwo,brightThree;
+    initLight(brightOne, vec4(sin(iTime), cos(iTime) , -3.0,0.0), vec3(1.0, 1.0, 1.0), 10.0);
+    initLight(brightTwo, vec4(cos(iTime), sin(iTime), 3.0,0.0), vec3(1.0, 1.0, 1.0), 10.0);
+    initLight(brightThree, vec4(3.0,3.0, -3.0,0.0), vec3(1.0, 1.0, 1.0), 10.0);
+    
+    //TEST
+    vec3 dp;
+    dp.xy = ray.direction.xy - sphere.center.xy;	
+    float lSq = lengthSq(dp.xy),
+        rSq = sphere.radius * sphere.radius;
+    //if(length(dp.xy) <= sphere.radius)
+    if (lSq <= rSq)
+    {
+        //return vec4(1.0,0.5,0.0,1.0);
+        
+        //for now 'z' represents 'zSq'
+        //dp.z = sphere.radius * sphere.radius
+         //   - (dp.x * dp.x + dp.y * dp.y);
+        dp.z = rSq - lSq;
+        
+        vec3 position = sphere.center.xyz + 
+            vec3(dp.x, dp.y, sqrt(dp.z)); // zSq -> z
+        
+        vec3 normal = 			
+            //normalize(position - sphere.center.xyz);
+        	(position - sphere.center.xyz) / sphere.radius;
+        
+        //Lambert
+        //return vec4(lambertianDiffusion(brightOne, normal, position, (normal * 0.5 + 0.5)), 1.0);
+        vec3 reflectance1 = lambertianReflection(brightOne, normal, position, (normal * 0.5 + 0.5));
+         vec3 reflectance2 = lambertianReflection(brightTwo, normal, position, (normal * 0.5 + 0.5));
+         vec3 reflectance3 = lambertianReflection(brightThree, normal, position, (normal * 0.5 + 0.5));
+        //Phong
+        vec4 phong1 = vec4(phongReflectance(brightOne, normal, position, (normal * 0.5 + 0.5), ray.direction.xyz), 1.0);
+        //Blinn-Phong
+        vec4 bPhong1 = vec4(blinnPhongReflectance(brightTwo, normal, position, (normal * 0.5 + 0.5), ray.direction.xyz), 1.0);
+        vec4 bPhong2 = vec4(blinnPhongReflectance(brightThree, normal, position, (normal * 0.5 + 0.5), ray.direction.xyz), 1.0);
+        //vec4 layer1 = mix(phong1,bPhong1,bPhong1.a);
+        
+        vec3 combo1 = lightCombo(brightOne,reflectance1, (normal * 0.5 + 0.5), phong1.xyz,ray.direction.xyz);
+        vec3 combo2 = lightCombo(brightTwo,reflectance2, (normal * 0.5 + 0.5), bPhong1.xyz,ray.direction.xyz);
+        vec3 combo3 = lightCombo(brightThree,reflectance3, (normal * 0.5 + 0.5), bPhong2.xyz,ray.direction.xyz);
+        vec3 final = combineLight(combo1,combo2,combo3);
+        //return vec4(final,1.0);
+        return phong1;
+    }
+    
+    
+}
+
 
 //------------------------------------------------------------
 // SHADERTOY MAIN
@@ -9,33 +78,30 @@
 //    fragCoord: input location of current pixel in image (in pixels)
 void mainImage(out color4 fragColor, in sCoord fragCoord)
 {
-    vec4 def1 = vec4(1.0, 1.0, 1.0, 1.0);
+    // viewing plane (viewport) inputs
+    const sBasis eyePosition = sBasis(0.0);
+    const sScalar viewportHeight = 2.0, focalLength = 1.5;
     
-    // setup
-    // test UV for input image
-    sCoord uv = fragCoord / iChannelResolution[0].xy;
+    // viewport info
+    sViewport vp;
+
+    // ray
+    sRay ray;
     
-    // TESTING
-    // set iChannel0 to 'Misc/Buffer A' and fetch sample
-    fragColor = texture(iChannel0, uv);
+    // render
+    initViewport(vp, viewportHeight, focalLength, fragCoord, iResolution.xy);
+    initRayPersp(ray, eyePosition, vp.viewportPoint.xyz);
+   
     
-    //Add - verage
-    /*
-    fragColor = (texture(iChannel2, uv) + texture(iChannel1, uv) + texture(iChannel0, uv)) / 3.0;
-    /**/
+    //translate ray into cubemap points
+    vec3 cubeLoc = ray.direction.xyz;
     
-    //MIX
-    /*
-    fragColor = mix(texture(iChannel0, uv), texture(iChannel2, uv), texture(iChannel2, uv).a);
-    /**/
+    //rotate ray based on iTime
+    mat2 rotationMatrix = mat2(cos(iTime), -sin(iTime), sin(iTime), cos(iTime));
+    cubeLoc.xz = cubeLoc.xz * rotationMatrix; //rotating cubemap based on time
+    vec4 layer1 = texture(iChannel1, cubeLoc);
+    vec4 layer2 = calcColor(vp,ray);
     
-    //SCREEN door
-    /*
-    fragColor = def1 - (def1 - texture(iChannel0, uv)) * (def1 - texture(iChannel2, uv));
-    /**/
-    
-    //MULTIPLY
-    /*
-    fragColor = texture(iChannel0, uv) * texture(iChannel2, uv);
-    /**/
+    //fragColor += texture(iChannel1, cubeLoc);
+    fragColor += mix(layer1,layer2,layer2.a);
 }
