@@ -69,11 +69,23 @@ vec4 calcColor(in vec4 rayDirection, in vec4 rayOrigin)
 //    fragCoord: input location of current pixel in image (in pixels)
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
-    // viewing plane (viewport) info
+    
+    // viewport info
+    sViewport vp;
+
+    // ray
+    sRay ray;
+    
+    // viewing plane (viewport) inputs
+    const sBasis eyePosition = sBasis(0.0);
+    const sScalar viewportHeight = 2.0, focalLength = 1.5;
+    
+    
+   /* // viewing plane (viewport) info
     vec3 viewport;
     vec2 ndc, uv, resolutionInv;
     float aspect;
-    const float viewportHeight = 2.0, focalLength = 1.0;
+    const float viewportHeight = 2.0, focalLength = 1.0; */
 
     // ray
     vec4 rayDirection, rayOrigin;
@@ -81,8 +93,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     // setup
     fragColor = vec4(0.0);
     
-    initViewport(viewport, viewportHeight, focalLength, fragCoord, iResolution.xy);
-    initRay(rayDirection, rayOrigin, vec3(0.0), viewport);
+    initViewport(vp, viewportHeight, focalLength, fragCoord, iResolution.xy);
+    initRayPersp(ray, eyePosition, vp.viewportPoint.xyz);
     
     fragColor += calcColor(rayDirection, rayOrigin);
 }

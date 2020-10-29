@@ -42,8 +42,19 @@ color4 calcColor(in sViewport vp, in sRay ray)
     vec3 cubeLoc = ray.direction.xyz;
     
     //rotate ray based on iTime
-    mat2 rotationMatrix = mat2(cos(iTime), -sin(iTime), sin(iTime), cos(iTime));
-    cubeLoc.xz = cubeLoc.xz * rotationMatrix; //rotating cubemap based on time
+    //mat2 rotationMatrix = mat2(cos(iTime), -sin(iTime), sin(iTime), cos(iTime));
+    //cubeLoc.xz = cubeLoc.xz * rotationMatrix; //rotating cubemap based on time    
+    //mat2 mouseLocMat = mat2(cos(iMouse.x), -sin(iMouse.y),sin(iMouse.x),cos(iMouse.y));
+    //cubeLoc.xy = cubeLoc.xy * mouseLocMat;
+    vec2 m = iMouse.xy * 3.0/iResolution.x;
+    //m.y = -m.y;
+    m.x = -m.x; 
+    
+    mat3 rotX = mat3(1.0, 0.0, 0.0, 0.0, cos(m.y), sin(m.y), 0.0, -sin(m.y), cos(m.y));
+    mat3 rotY = mat3(cos(m.x), 0.0, -sin(m.x), 0.0, 1.0, 0.0, sin(m.x), 0.0, cos(m.x));
+    
+    cubeLoc = (rotY * rotX) * cubeLoc;
+    
     vec4 layer = texture(iChannel1, cubeLoc);
     
     //dp.xy = ray.direction.xy - sphere.center.xy;
