@@ -1,100 +1,41 @@
-// calcColor: calculate the color of a pixel given a ray
-//    rayDirection: input ray direction
-//    rayOrigin:    input ray origin
-vec4 calcColor(in vec4 rayDirection, in vec4 rayOrigin)
-{
-    // DUMMY RESULT: OUTPUT RAY DIRECTION AS-IS
-    //  -> what does the ray look like as color?
-    //return rayDirection;
-    
-    //SCENE
-    sSphere sphere;
-    initSphere(sphere, vec3(0.0,0.0,-4.0), 0.5);
-    sLight brightOne, brightTwo, brightThree;
-    initLight(brightOne, vec4(sin(iTime), cos(iTime) , -3.0, 0.0), vec3(1.0, 0.75, 0.75), 100.0);
-    initLight(brightTwo, vec4(cos(2.0 * iTime), sin(2.0 * iTime), -3.0, 0.0), vec3(0.75, 0.75, 1.0), 100.0);
-    initLight(brightThree, vec4(-2.0,-2.0, -3.0, 0.0), vec3(0.75, 1.0, 0.75), 100.0);
-    
-    //TEST
-    vec3 dp;
-    dp.xy = rayDirection.xy - sphere.center.xy;	
-    float lSq = lengthSq(dp.xy),
-        rSq = sphere.radius * sphere.radius;
-    //if(length(dp.xy) <= sphere.radius)
-    if (lSq <= rSq)
-    {
-        //return vec4(1.0,0.5,0.0,1.0);
-        
-        //for now 'z' represents 'zSq'
-        //dp.z = sphere.radius * sphere.radius
-         //   - (dp.x * dp.x + dp.y * dp.y);
-        dp.z = rSq - lSq;
-        
-        vec3 position = sphere.center.xyz + 
-            vec3(dp.x, dp.y, sqrt(dp.z)); // zSq -> z
-        
-        vec3 normal = 			
-            //normalize(position - sphere.center.xyz);
-        	(position - sphere.center.xyz) / sphere.radius;
-        
-        //Lambert
-        //return vec4(lambertianDiffusion(brightOne, normal, position, (normal * 0.5 + 0.5)), 1.0);
-        vec3 reflectance1 = lambertianReflection(brightOne, normal, position, (normal * 0.5 + 0.5));
-         vec3 reflectance2 = lambertianReflection(brightTwo, normal, position, (normal * 0.5 + 0.5));
-         vec3 reflectance3 = lambertianReflection(brightThree, normal, position, (normal * 0.5 + 0.5));
-        //Phong
-        vec3 phong1 = phongReflectance(brightOne, normal, position, (normal * 0.5 + 0.5), rayDirection.xyz);
-        //Blinn-Phong
-        vec3 bPhong1 = blinnPhongReflectance(brightTwo, normal, position, (normal * 0.5 + 0.5), rayDirection.xyz);
-        vec3 bPhong2 = blinnPhongReflectance(brightThree, normal, position, (normal * 0.5 + 0.5), rayDirection.xyz);
-        //vec4 layer1 = mix(phong1,bPhong1,bPhong1.a);
-        
-        vec3 combo1 = lightCombo(brightOne,reflectance1, (normal * 0.5 + 0.5), phong1,rayDirection.xyz);
-        vec3 combo2 = lightCombo(brightTwo,reflectance2, (normal * 0.5 + 0.5), bPhong1,rayDirection.xyz);
-        vec3 combo3 = lightCombo(brightThree,reflectance3, (normal * 0.5 + 0.5), bPhong2,rayDirection.xyz);
-        vec3 final = combineLight(combo1,combo2,combo3);
-        //return vec4(final,1.0);
-        return vec4(final, 1.0);
-        
-    }
-	
-	// BACKGROUND
-	const vec3 warm = vec3(0.8, 0.4, 0.2), cool = vec3(0.2, 0.4, 0.8);
-	return vec4(mix(warm, cool, rayDirection.y), 1.0);
-    return vec4(0.5);
-}
+// GLSL STARTER CODE BY DANIEL S. BUCKSTEIN
+//  -> IMAGE TAB (final)
+
+//------------------------------------------------------------
+// SHADERTOY MAIN
 
 // mainImage: process the current pixel (exactly one call per pixel)
 //    fragColor: output final color for current pixel
 //    fragCoord: input location of current pixel in image (in pixels)
-void mainImage(out vec4 fragColor, in vec2 fragCoord)
+void mainImage(out color4 fragColor, in sCoord fragCoord)
 {
+    vec4 def1 = vec4(1.0, 1.0, 1.0, 1.0);
     
-    // viewport info
-    sViewport vp;
-
-    // ray
-    sRay ray;
-    
-    // viewing plane (viewport) inputs
-    const sBasis eyePosition = sBasis(0.0);
-    const sScalar viewportHeight = 2.0, focalLength = 1.5;
-    
-    
-   /* // viewing plane (viewport) info
-    vec3 viewport;
-    vec2 ndc, uv, resolutionInv;
-    float aspect;
-    const float viewportHeight = 2.0, focalLength = 1.0; */
-
-    // ray
-    vec4 rayDirection, rayOrigin;
-
     // setup
-    fragColor = vec4(0.0);
+    // test UV for input image
+    sCoord uv = fragCoord / iChannelResolution[0].xy;
     
-    initViewport(vp, viewportHeight, focalLength, fragCoord, iResolution.xy);
-    initRayPersp(ray, eyePosition, vp.viewportPoint.xyz);
+    // TESTING
+    // set iChannel0 to 'Misc/Buffer A' and fetch sample
+    fragColor = texture(iChannel0, uv);
     
-    fragColor += calcColor(rayDirection, rayOrigin);
+    //Add - verage
+    /*
+    fragColor = (texture(iChannel2, uv) + texture(iChannel1, uv) + texture(iChannel0, uv)) / 3.0;
+    /**/
+    
+    //MIX
+    /*
+    fragColor = mix(texture(iChannel0, uv), texture(iChannel2, uv), texture(iChannel2, uv).a);
+    /**/
+    
+    //SCREEN door
+    /*
+    fragColor = def1 - (def1 - texture(iChannel0, uv)) * (def1 - texture(iChannel2, uv));
+    /**/
+    
+    //MULTIPLY
+    /*
+    fragColor = texture(iChannel0, uv) * texture(iChannel2, uv);
+    /**/
 }
