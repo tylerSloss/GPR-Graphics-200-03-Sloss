@@ -13,11 +13,11 @@ void mainImage(out color4 fragColor, in sCoord fragCoord)
     
     // setup
     // test UV for input image
-    sCoord uv = fragCoord / iChannelResolution[0].xy;
+    sCoord uv = fragCoord / iChannelResolution[2].xy;
     
     // TESTING
     // set iChannel0 to 'Misc/Buffer A' and fetch sample
-    fragColor = texture(iChannel0, uv);
+    fragColor = texture(iChannel2, uv);
     
     //Add - verage
     /*
