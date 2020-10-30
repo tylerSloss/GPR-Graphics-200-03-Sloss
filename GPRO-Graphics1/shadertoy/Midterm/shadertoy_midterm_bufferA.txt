@@ -12,10 +12,18 @@ color4 calcColor(in sViewport vp, in sRay ray)
     
     vec4 myColor;
     
+    vec2 m = (iMouse.xy - (iResolution.xy / 2.0)) * 4.2/iResolution.x;
+    //m.y = -m.y;
+    m.x = -m.x; 
+    
+    mat3 rotX = mat3(1.0, 0.0, 0.0, 0.0, cos(m.y), sin(m.y), 0.0, -sin(m.y), cos(m.y));
+    mat3 rotY = mat3(cos(m.x), 0.0, -sin(m.x), 0.0, 1.0, 0.0, sin(m.x), 0.0, cos(m.x));
+    mat3 rot = rotY * rotX;
+    
     //SCENE
     sSphere warp;
     initSphere(warp, vec3(0.0,0.0,-4.0), 0.5);
-    float orbitSpeed = 2.0;
+    float orbitSpeed = 3.4;
     float orbitOffset = 3.14159265358979 / 3.0;
     sSphere orbit1;
     initSphere(orbit1, vec3(0.5 * sin(iTime * orbitSpeed), -0.1 * cos(iTime * orbitSpeed), -4.0 + 0.5 * cos(iTime * orbitSpeed)), 0.05);
@@ -30,7 +38,8 @@ color4 calcColor(in sViewport vp, in sRay ray)
     sSphere hole;
     initSphere(hole, vec3(0.0, 0.0, -4.0), 0.3);
     sLight brightTwo;
-    initLight(brightTwo, vec4(4.0 *cos(iTime), 4.0, -2.0 * sin(iTime),0.0), vec3(1.0, 1.0, 1.0), 1000.0);
+    initLight(brightTwo, vec4(4.0 , 4.0, -2.0 ,0.0), vec3(1.0, 1.0, 1.0), 1000.0);
+    brightTwo.sCenter.xyz = brightTwo.sCenter.xyz * rot;
     
     
     vec3 dp;
@@ -159,16 +168,10 @@ color4 calcColor(in sViewport vp, in sRay ray)
     //rotate ray based on iTime
     //mat2 rotationMatrix = mat2(cos(iTime), -sin(iTime), sin(iTime), cos(iTime));
     //cubeLoc.xz = cubeLoc.xz * rotationMatrix; //rotating cubemap based on time    
-    //mat2 mouseLocMat = mat2(cos(iMouse.x), -sin(iMouse.y),sin(iMouse.x),cos(iMouse.y));
-    //cubeLoc.xy = cubeLoc.xy * mouseLocMat;
-    vec2 m = (iMouse.xy - (iResolution.xy / 2.0)) * 4.2/iResolution.x;
-    //m.y = -m.y;
-    m.x = -m.x; 
+       
     
-    mat3 rotX = mat3(1.0, 0.0, 0.0, 0.0, cos(m.y), sin(m.y), 0.0, -sin(m.y), cos(m.y));
-    mat3 rotY = mat3(cos(m.x), 0.0, -sin(m.x), 0.0, 1.0, 0.0, sin(m.x), 0.0, cos(m.x));
-    
-    cubeLoc = (rotY * rotX) * cubeLoc;
+    //cubeLoc = (rotY * rotX) * cubeLoc;
+    cubeLoc = rot * cubeLoc;
     
     vec4 layer = texture(iChannel1, cubeLoc);
     
