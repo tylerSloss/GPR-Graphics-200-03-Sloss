@@ -7,6 +7,7 @@
 // 	uv: texture coordinate
 
 layout (location = 0) in vec4 aPosition;
+layout (location = 1) in vec3 aNormal;
 //in vec4 aPosition
 
 //TRANSFORM UNIFOMS
@@ -16,7 +17,13 @@ uniform mat4 uProjMat;
 uniform mat4 uViewProjMat;
 
 //VARYING 
-out vec4 vColor;
+
+//PER_VERTEX: pass final Color
+//out vec4 vColor;
+
+//PER_Fragmet: pass requirements for final color
+out vec4 vNormal;
+
 
 void main()
 {
@@ -26,21 +33,42 @@ void main()
 	//gl_Position = aPosition;
 	
 	//postition in world space (not yet correct)
-	vec4 pos_world = uModelMat * aPosition;
+	//vec4 pos_world = uModelMat * aPosition;
 	//gl_Position = pos_world;
 	
 	//positon in camera space
-	vec4 pos_view = uViewMat * pos_world;
+	//vec4 pos_view = uViewMat * pos_world;
 	//vec4 pos_view = uViewMat * uModelMat * aPosition;
 	//gl_Position = pos_view;
 	
-	//position in clip space
-	vec4 pos_clip = uProjMat * pos_view;
-	//vec4 pos_clip = uViewProjMat * pos_world;
-	//vec4 pos_clip = uViewProjMat * uModelMat * aPosition;
-	
+	//Position pipeline
+	mat4 modlViewMat = uViewMat * uModelMat;		
+	vec4 pos_view = modlViewMat * aPosition;
+	vec4 pos_clip = uProjMat * pos_view;	
 	gl_Position = pos_clip;
 	
+	//NORMAL PIPELINE
+	mat3 normalMat = transpose(inverse(mat3(modlViewMat)));
+	vec3 nrm_view = mat3(modlViewMat) * aNormal;
+		
+	
+	
+	//position in clip space
+	//vec4 pos_clip = uProjMat * pos_view;
+	//vec4 pos_clip = uViewProjMat * pos_world;
+	//vec4 pos_clip = uViewProjMat * uModelMat * aPosition;
+	//gl_Position = pos_clip;
+	
 	//vColor = vec4(1.0,0.5,0.0,1.0);
-	vColor = aPosition;
+	//vColor = pos_view;
+	
+	//DEBUGING 
+	//PER_VERTEX : output is final Color
+	//vColor = aPosition;
+	// example: output normal as color
+	//vColor = vec4(aNormal * 0.5 + 0.5,1.0);
+	
+	//PER_FRAGMENT: OUTPUT anything fragment shader needs to calc final color
+	//vNormal = vec4(aNormal,0.0);
+	vNormal = vec4(nrm_view,0.0);			
 }

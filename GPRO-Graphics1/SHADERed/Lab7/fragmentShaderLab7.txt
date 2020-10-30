@@ -8,10 +8,23 @@ layout (location = 0) out vec4 rtFragColor;
 //out vec4 rtFragColor;
 
 //VARYING 
-in vec4 vColor;
+//PER_VERTEX final color inbound
+//in vec4 vColor;
+
+//PER_Fragmet: pass requirements for final color
+in vec4 vNormal;
+
+
+
 
 void main()
 {
 	//rtFragColor = vec4(0.5,1.0,0.0,1.0);
-	rtFragColor = vColor;
+	//PER_VERTEX: just display the final color  
+	//rtFragColor = vColor;
+	
+	//PER_FRAGMENT: calculate and display
+	vec4 N = normalize(vNormal);
+	rtFragColor = vec4(N.xyz * 0.5 + 0.5,1.0);
+	
 }
