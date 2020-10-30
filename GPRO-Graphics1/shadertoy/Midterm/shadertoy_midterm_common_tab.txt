@@ -328,6 +328,22 @@ vec3 combineLight(vec3 combo1, vec3 combo2, vec3 combo3)
    return (Ia * Ca) + (combo1 + combo2 + combo3); 
 }
 
+//Sphere render
+vec4 renderSphere(in vec3 dp, in float rSq, in float lSq, sSphere orbit, in sRay ray, in sLight bright)
+{
+    dp.z = rSq - lSq;
+        
+    vec3 position = orbit.center.xyz + 
+    vec3(dp.x, dp.y, sqrt(dp.z)); // zSq -> z
+        
+    vec3 normal = (position - orbit.center.xyz) / orbit.radius;
+       
+    //Blinn-Phong
+    return vec4(blinnPhongReflectance(bright, normal, position, (normal * 0.5 + 0.5), ray.direction.xyz), 1.0);
+}
+
+
+
 //------------------------------------------------------------
 /*
 // GLSL FRAGMENT SHADER STRUCTURE WITH COMMON TAB
