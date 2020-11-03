@@ -5,10 +5,13 @@
 // 	3D point in space
 // 	normal vector
 // 	uv: texture coordinate
-
+//OBJECT SPACE
 layout (location = 0) in vec4 aPosition;
 layout (location = 1) in vec3 aNormal;
 //in vec4 aPosition
+//layout (location = 2) in vec2 aTexcoord;
+layout (location = 2) in vec4 aTexcoord;
+//TEXTURE SPACE is it's own thing
 
 //TRANSFORM UNIFOMS
 uniform mat4 uModelMat;
@@ -24,6 +27,8 @@ uniform mat4 uViewProjMat;
 //PER_Fragmet: pass requirements for final color
 out vec4 vNormal;
 
+//out vec2 vTexcoord;
+out vec4 vTexcoord;
 
 void main()
 {
@@ -51,6 +56,13 @@ void main()
 	mat3 normalMat = transpose(inverse(mat3(modlViewMat)));
 	vec3 nrm_view = mat3(modlViewMat) * aNormal;
 		
+	// TEXCOORD PIPELINE (texture space is 2D)
+	mat4 atlasMat = mat4(0.5, 0.0, 0.0, 0.0,
+						 0.0, 0.5, 0.0, 0.0,
+						 0.0, 0.0, 1.0, 0.0,
+						 0.25, 0.25, 0.0, 1.0);
+	vec4 uv_atlas = atlasMat * aTexcoord;
+	
 	
 	
 	//position in clip space
@@ -70,5 +82,9 @@ void main()
 	
 	//PER_FRAGMENT: OUTPUT anything fragment shader needs to calc final color
 	//vNormal = vec4(aNormal,0.0);
-	vNormal = vec4(nrm_view,0.0);			
+	vNormal = vec4(nrm_view,0.0);		
+	
+	//vTexcoord = aTexcoord;	
+	vTexcoord = uv_atlas;
+	//gl_Position = /*uProjMat * modlViewMat * */ aTexcoord;
 }
