@@ -18,7 +18,13 @@ uniform mat4 uModelMat;
 uniform mat4 uViewMat;
 uniform mat4 uProjMat;
 uniform mat4 uViewProjMat;
-uniform int uTexture;
+
+// EXAMPLE: Some uniform in a program.
+//-------------------------------
+// Some texture in the vertex shader:
+uniform sampler2D uTexture;
+//-------------------------------
+
 
 //renamed dotproduct function, overloaded for vec2 - vec4
 float lenSq(in vec2 x)
@@ -154,8 +160,8 @@ void main()
 	// TEXCOORD PIPELINE (texture space is 2D)
 	mat4 atlasMat = mat4(0.5, 0.0, 0.0, 0.0,
 						 0.0, 0.5, 0.0, 0.0,
-						 0.0, 0.0, 1.0, 0.0,
-						 0.0, 0.0, 0.0, 1.0);
+						 0.25, 0.0, 1.0, 0.0,
+						 0.25, 0.0, 0.0, 1.0);
 	vec4 uv_atlas = atlasMat * aTexcoord;
 	
 	
@@ -186,7 +192,6 @@ void main()
 	initLight(light1, vec3(-1.0,0.0,0.0),vec3(1.0,1.0,1.0),10.0);
 	initLight(light2, vec3(0.0,-1.0,1.0),vec3(1.0,1.0,1.0),10.0);
 	initLight(light3, vec3(1.0,0.0,-1.0),vec3(1.0,1.0,1.0),10.0);
-	
 	
 	
 	
