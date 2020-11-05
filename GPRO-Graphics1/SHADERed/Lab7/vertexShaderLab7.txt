@@ -115,15 +115,18 @@ vec3 lightCombo(in pointLight lite1,in pointLight lite2,in pointLight lite3,in v
 //out vec4 vColor;
 
 //PER_Fragmet: pass requirements for final color
-out vec4 vNormal;
+out vec4 vNormal1;
+out vec4 vNormal2;
 
 //out vec2 vTexcoord;
 out vec4 vTexcoord;
 
+out vec4 vPos;
+
 void main()
 {
 	
-	
+	vPos = aPosition;
 	//REQUIRED: write to this variable:
 	//Problem: gl_Position is in "clip_space"
 	//problem: aPosition is in "object_space"	
@@ -172,8 +175,8 @@ void main()
 	//vColor = vec4(aNormal * 0.5 + 0.5,1.0);
 	
 	//PER_FRAGMENT: OUTPUT anything fragment shader needs to calc final color
-	//vNormal = vec4(aNormal,0.0);
-	vNormal = vec4(nrm_view,0.0);		
+	vNormal1 = vec4(aNormal,0.0);
+	vNormal2 = vec4(nrm_view,0.0);		
 	
 	//vTexcoord = aTexcoord;	
 	vTexcoord = uv_atlas;
@@ -187,10 +190,11 @@ void main()
 	
 	
 	
-	vTexcoord = vec4( lightCombo(light1,light2,light3,aNormal,aPosition.xyz,uv_atlas.xyz,nrm_view),1.0);
+	//vTexcoord = vec4( lightCombo(light1,light2,light3,aNormal,aPosition.xyz,uv_atlas.xyz,nrm_view),1.0);
 
+	//vTexcoord = vec4( lightCombo(light1,light2,light3,aNormal,aPosition.xyz,uv_atlas.xyz,aPosition.xyz),1.0);
 
-
+	
 
 
 
