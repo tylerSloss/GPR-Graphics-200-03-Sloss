@@ -32,6 +32,7 @@ vec4 asPoint(in vec3 point)
     return vec4(point, 1.0);
 }
 
+//light structure and initulization 
 struct pointLight{
 	vec4 center;
     vec3 color;
@@ -138,16 +139,17 @@ void main()
 	pointLight light1,light2,light3;
 	initLight(light1, vec3(-1.0,0.0,0.0),vec3(1.0,1.0,1.0),10.0);
 	initLight(light2, vec3(0.0,-1.0,1.0),vec3(1.0,1.0,1.0),10.0);
-	initLight(light3, vec3(1.0,0.0,-1.0),vec3(1.0,1.0,1.0),10.0);
+	initLight(light3, vec3(1.0,0.0,-1.0),vec3(1.0,1.0,1.0),10.0); 
 	
 	//vTexcoord = vec4( lightCombo(light1,light2,light3,aNormal,aPosition.xyz,uv_atlas.xyz,nrm_view),1.0);
 	//rtFragColor *= vec4(lightCombo(light1,light2,light3,N.xyz,vec3(N.xyz * 0.5 + 0.5),texture(uTexture,2.0 * vTexcoord.xy).xyz,vPos.xyz),1.0);
-	rtFragColor *= vec4(lightCombo(light1,light2,light3,vNormal1.xyz,vPos.xyz,texture(uTexture,2.0 * vTexcoord.xy).xyz,P.xyz),1.0);
-
-
-
-
-
+	
+	//fragment object space
+	rtFragColor *= vec4(lightCombo(light1,light2,light3,N.xyz,P.xyz,texture(uTexture,2.0 * vTexcoord.xy).xyz,P.xyz),1.0);
+	
+	//fragment view space
+	//rtFragColor *= vec4(lightCombo(light1,light2,light3,N.xyz,P.xyz,texture(uTexture,2.0 * vTexcoord.xy).xyz,N2.xyz),1.0);
+	
 
 }
 
