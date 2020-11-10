@@ -1,0 +1,30 @@
+#version 300 es
+
+layout (location = 0) in vec4 aPosition;
+
+uniform mat4 uModelMat, uViewMat, uProjMat;
+
+out vec4 vPosClip;
+
+void main()
+{
+	gl_Position = aPosition;
+	// w = 1,  because it's a point
+	
+	gl_Position = uModelMat * aPosition;
+	// w = 1 because Mat does not change it
+	
+	gl_Position = uViewMat * uModelMat * aPosition;
+	// w = 1 because point
+	
+	gl_Position = uProjMat * uViewMat * uModelMat * aPosition;
+	// w = 1, because point IF orthographic
+	// w = distance to viewer
+	
+	//NOT PART OF VS
+	//NDC = CLIP/CLIP.W
+	//w = 1
+	// visible region is contained within [-1,+1]
+	
+	vPosClip = gl_Position;
+}
