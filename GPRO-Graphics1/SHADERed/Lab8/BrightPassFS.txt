@@ -1,0 +1,24 @@
+#version 300 es
+
+#ifdef GL_ES
+precision highp float;
+#endif //GL_ES
+
+in vec4 vNormal;
+in vec2 vTexcoord;
+
+layout (location = 0) out vec4 rtFragColor;
+
+uniform sampler2D uTexture;
+uniform sampler2D uTexture2;
+
+void main()
+{
+	 vec4 stars = texture(uTexture2,vTexcoord.xy);
+	 vec4 notStars = texture(uTexture,vTexcoord.xy);
+	 float luminance = (0.2126 * notStars.x) + (0.7152 * notStars.y) + (0.0722 * notStars.z);
+	 notStars = notStars * luminance;
+	rtFragColor = mix(stars,notStars,notStars.a);
+}
+
+
