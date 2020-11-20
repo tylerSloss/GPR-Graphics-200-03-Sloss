@@ -140,15 +140,15 @@ out vec4 vPos;
 void main()
 {
 	
-	vPos = aPosition;
+	
 	//REQUIRED: write to this variable:
 	//Problem: gl_Position is in "clip_space"
 	//problem: aPosition is in "object_space"	
 	//gl_Position = aPosition;
 	
 	//postition in world space (not yet correct)
-	vec4 pos_world = uModelMat * aPosition;
-	gl_Position = pos_world;
+	//vec4 pos_world = uModelMat * aPosition;
+	//gl_Position = pos_world;
 	
 	//positon in camera space
 	//vec4 pos_view = uViewMat * pos_world;
@@ -156,6 +156,8 @@ void main()
 	//gl_Position = pos_view;
 	
 	//Position pipelinemat4 revolve amd orbit;
+	float erthOrbitRad = 2.0;
+	float munOrbitRad = 0.5;
 	mat4 revolve;
 	revolve[0] = vec4(cos(Time), sin(Time), 0, 0);
 	revolve[1] = vec4(-sin(Time), cos(Time), 0, 0);
@@ -165,19 +167,32 @@ void main()
 	orbit[0] = vec4(1, 0, 0, 0);
 	orbit[1] = vec4(0, 1, 0, 0);
 	orbit[2] = vec4(0, 0, 1, 0);
-	orbit[3] = vec4(2.0 * sin(Time), 2.0 * cos(Time), 0, 1);
-	mat4 modlViewMat = uViewMat * uModelMat * revolve;		
-	vec4 pos_view = modlViewMat * aPosition;
-	vec4 pos_clip = uProjMat * pos_view;	
-	gl_Position = pos_clip;
+	orbit[3] = vec4(erthOrbitRad * sin(Time), erthOrbitRad * cos(Time), 0, 1);
+	mat4 orbit2;
+	orbit2[0] = vec4(1, 0, 0, 0);
+	orbit2[1] = vec4(0, 1, 0, 0);
+	orbit2[2] = vec4(0, 0, 1, 0);
+	orbit2[3] = vec4(erthOrbitRad * sin(Time) + munOrbitRad * sin(3.0 * Time), erthOrbitRad * cos(Time) + munOrbitRad * cos(3.0 * Time), 0, 1);
+	mat4 alteration;
+	alteration[0] = vec4(1.0, 0.0, 0.0, 0.0);
+	alteration[1] = vec4(0.0, 1.0, 0.0, 0.0);
+	alteration[2] = vec4(0.0, 0.0, 1.0, 0.0);
+	alteration[3] = vec4(0.0, 0.0, 0.0, 1.0);
 	if(Thing == 1.0)
 	{
-		gl_Position * orbit;
+		alteration = orbit;
 	}
 	else if (Thing == 2.0)
 	{
-		gl_Position * orbit;
-	}
+		alteration = orbit2;
+	}	
+	mat4 modlViewMat = uViewMat * uModelMat * alteration * revolve;		
+	vec4 pos_view = modlViewMat * aPosition;
+	vec4 pos_clip = uProjMat * pos_view;
+	gl_Position = pos_clip;
+	vPos = aPosition;
+	
+	
 	
 	//NORMAL PIPELINE
 	mat3 normalMat = transpose(inverse(mat3(modlViewMat)));
