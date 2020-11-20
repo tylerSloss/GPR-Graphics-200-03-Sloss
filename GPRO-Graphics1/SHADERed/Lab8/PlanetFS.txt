@@ -21,7 +21,12 @@ in vec4 vTexcoord;
 // EXAMPLE: Some uniform in a program.
 //-------------------------------
 // Some texture in the vertex shader:
-uniform sampler2D uTexture;
+uniform sampler2D uSun;
+uniform sampler2D uErth;
+uniform sampler2D uMun;
+//-------------------------------
+//thing for differentiation
+uniform float Thing;
 //-------------------------------
 
 
@@ -120,8 +125,18 @@ vec3 lightCombo(in pointLight lite1,in pointLight lite2,in pointLight lite3,in v
 
 void main()
 {
-	
-	rtFragColor = texture(uTexture,2.0 * vTexcoord.xy);
+	if(Thing == 0.0)
+	{
+		rtFragColor = texture(uSun,2.0 * vTexcoord.xy);
+	}
+	else if(Thing == 1.0)
+	{
+		rtFragColor = texture(uErth,2.0 * vTexcoord.xy);
+	}
+	else
+	{
+		rtFragColor = texture(uMun,2.0 * vTexcoord.xy);
+	}
 	
 	//rtFragColor = vec4(0.5,1.0,0.0,1.0);
 	//PER_VERTEX: just display the final color  

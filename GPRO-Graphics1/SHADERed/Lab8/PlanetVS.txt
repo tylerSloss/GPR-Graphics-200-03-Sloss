@@ -22,10 +22,15 @@ uniform mat4 uViewProjMat;
 // EXAMPLE: Some uniform in a program.
 //-------------------------------
 // Some texture in the vertex shader:
-uniform sampler2D uTexture;
+uniform sampler2D uSun;
+uniform sampler2D uErth;
+uniform sampler2D uMun;
 //-------------------------------
 //time for motion
 uniform float Time;
+//-------------------------------
+//thing for differentiation
+uniform float Thing;
 //-------------------------------
 
 
@@ -150,16 +155,29 @@ void main()
 	//vec4 pos_view = uViewMat * uModelMat * aPosition;
 	//gl_Position = pos_view;
 	
-	//Position pipelinemat4 orbit;
+	//Position pipelinemat4 revolve amd orbit;
+	mat4 revolve;
+	revolve[0] = vec4(cos(Time), sin(Time), 0, 0);
+	revolve[1] = vec4(-sin(Time), cos(Time), 0, 0);
+	revolve[2] = vec4(0, 0, 1, 0);
+	revolve[3] = vec4(0, 0, 0, 1);
 	mat4 orbit;
-	orbit[0] = vec4(cos(Time), sin(Time), 0, 0);
-	orbit[1] = vec4(-sin(Time), cos(Time), 0, 0);
+	orbit[0] = vec4(1, 0, 0, 0);
+	orbit[1] = vec4(0, 1, 0, 0);
 	orbit[2] = vec4(0, 0, 1, 0);
-	orbit[3] = vec4(0, 0, 0, 1);
-	mat4 modlViewMat = uViewMat * (uModelMat * orbit);		
+	orbit[3] = vec4(2.0 * sin(Time), 2.0 * cos(Time), 0, 1);
+	mat4 modlViewMat = uViewMat * uModelMat * revolve;		
 	vec4 pos_view = modlViewMat * aPosition;
 	vec4 pos_clip = uProjMat * pos_view;	
 	gl_Position = pos_clip;
+	if(Thing == 1.0)
+	{
+		gl_Position * orbit;
+	}
+	else if (Thing == 2.0)
+	{
+		gl_Position * orbit;
+	}
 	
 	//NORMAL PIPELINE
 	mat3 normalMat = transpose(inverse(mat3(modlViewMat)));
