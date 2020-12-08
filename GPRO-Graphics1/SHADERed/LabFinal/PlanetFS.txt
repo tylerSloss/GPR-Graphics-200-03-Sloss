@@ -21,9 +21,7 @@ in vec4 vTexcoord;
 // EXAMPLE: Some uniform in a program.
 //-------------------------------
 // Some texture in the vertex shader:
-uniform sampler2D uSun;
-uniform sampler2D uErth;
-uniform sampler2D uMun;
+layout (binding = 0) uniform sampler2D uPlanets[3];
 //-------------------------------
 //thing for differentiation
 uniform float Thing;
