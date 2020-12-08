@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<project version="2">
+	<pipeline>
+		<pass name="Planet" type="shader" active="true">
+			<shader type="vs" path="shaders\BH_Sloss_VanWryn_Final_PlanetVS.glsl" entry="main" />
+			<shader type="ps" path="shaders\BH_Sloss_VanWryn_Final_PlanetPS.glsl" entry="main" />
+			<inputlayout>
+				<item value="Position" semantic="POSITION" />
+				<item value="Normal" semantic="NORMAL" />
+				<item value="Texcoord" semantic="TEXCOORD0" />
+			</inputlayout>
+			<rendertexture />
+			<items>
+				<item name="Sun" type="geometry">
+					<type>Sphere</type>
+					<width>1</width>
+					<height>1</height>
+					<depth>1</depth>
+					<pitch>1.57079637</pitch>
+					<topology>TriangleList</topology>
+				</item>
+				<item name="Erth" type="geometry">
+					<type>Sphere</type>
+					<width>0.200000003</width>
+					<height>1</height>
+					<depth>1</depth>
+					<pitch>1.57079637</pitch>
+					<topology>TriangleList</topology>
+				</item>
+				<item name="Mun" type="geometry">
+					<type>Sphere</type>
+					<width>0.100000001</width>
+					<height>1</height>
+					<depth>1</depth>
+					<pitch>1.57079637</pitch>
+					<topology>TriangleList</topology>
+				</item>
+			</items>
+			<itemvalues>
+				<value variable="Thing" for="Sun">
+					<row>
+						<value>0</value>
+					</row>
+				</value>
+				<value variable="Thing" for="Erth">
+					<row>
+						<value>1</value>
+					</row>
+				</value>
+				<value variable="Thing" for="Mun">
+					<row>
+						<value>2</value>
+					</row>
+				</value>
+			</itemvalues>
+			<variables>
+				<variable type="float" name="Time" system="Time" />
+				<variable type="float4x4" name="uViewMat" system="View" />
+				<variable type="float4x4" name="uModelMat" system="GeometryTransform" />
+				<variable type="float4x4" name="uProjMat" system="Projection" />
+				<variable type="float4x4" name="uViewProjMat" system="ViewProjection" />
+				<variable type="int" name="Thing">
+					<row>
+						<value>0</value>
+					</row>
+				</variable>
+			</variables>
+			<macros />
+		</pass>
+	</pipeline>
+	<objects>
+		<object type="texture" path="Textures\17274108e807373b99c46a573c78580b.jpg" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
+			<bind slot="1" name="Planet" />
+		</object>
+		<object type="texture" path="Textures\slightlylessdumbskystars.jpg" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat" />
+		<object type="texture" path="Textures\Sun_texture.jpg" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
+			<bind slot="0" name="Planet" />
+		</object>
+		<object type="texture" path="Textures\2k_mercury.jpg" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
+			<bind slot="2" name="Planet" />
+		</object>
+	</objects>
+	<cameras />
+	<settings>
+		<entry type="property" name="Planet" item="pipe" />
+		<entry type="file" name="Planet" shader="vs" />
+		<entry type="file" name="Planet" shader="ps" />
+		<entry type="camera" fp="false">
+			<distance>7</distance>
+			<pitch>8</pitch>
+			<yaw>306</yaw>
+			<roll>360</roll>
+		</entry>
+		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
+		<entry type="usealpha" val="false" />
+	</settings>
+	<plugindata />
+</project>
