@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project version="2">
 	<pipeline>
-		<pass name="Planet" type="shader" active="true">
+		<pass name="Planet" type="shader" active="false">
 			<shader type="vs" path="shaders\BH_Sloss_VanWryn_Final_PlanetVS.glsl" entry="main" />
 			<shader type="ps" path="shaders\BH_Sloss_VanWryn_Final_PlanetPS.glsl" entry="main" />
 			<inputlayout>
@@ -67,6 +67,73 @@
 			</variables>
 			<macros />
 		</pass>
+		<pass name="BlackHole" type="shader" active="true">
+			<shader type="vs" path="shaders\BlackHoleVS.glsl" entry="main" />
+			<shader type="ps" path="shaders\BlackHolePS.glsl" entry="main" />
+			<inputlayout>
+				<item value="Position" semantic="POSITION" />
+				<item value="Normal" semantic="NORMAL" />
+				<item value="Texcoord" semantic="TEXCOORD0" />
+			</inputlayout>
+			<rendertexture />
+			<items>
+				<item name="Sun2" type="geometry">
+					<type>Sphere</type>
+					<width>1</width>
+					<height>1</height>
+					<depth>1</depth>
+					<pitch>1.57079637</pitch>
+					<topology>TriangleList</topology>
+				</item>
+				<item name="Erth2" type="geometry">
+					<type>Sphere</type>
+					<width>0.200000003</width>
+					<height>1</height>
+					<depth>1</depth>
+					<pitch>1.57079637</pitch>
+					<topology>TriangleList</topology>
+				</item>
+				<item name="Mun2" type="geometry">
+					<type>Sphere</type>
+					<width>1</width>
+					<height>1</height>
+					<depth>1</depth>
+					<pitch>1.57079637</pitch>
+					<topology>TriangleList</topology>
+				</item>
+			</items>
+			<itemvalues>
+				<value variable="Thing" for="Sun2">
+					<row>
+						<value>0</value>
+					</row>
+				</value>
+				<value variable="Thing" for="Erth2">
+					<row>
+						<value>1</value>
+					</row>
+				</value>
+				<value variable="Thing" for="Mun2">
+					<row>
+						<value>2</value>
+					</row>
+				</value>
+			</itemvalues>
+			<variables>
+				<variable type="float" name="Time" system="Time" />
+				<variable type="int" name="Thing">
+					<row>
+						<value>0</value>
+					</row>
+				</variable>
+				<variable type="float4x4" name="uViewMat" system="View" />
+				<variable type="float4x4" name="uModelMat" system="GeometryTransform" />
+				<variable type="float4x4" name="uProjMat" system="Projection" />
+				<variable type="float4x4" name="uViewProjMat" system="ViewProjection" />
+				<variable type="float4x4" name="uInvModelMat" system="GeometryTransform" />
+			</variables>
+			<macros />
+		</pass>
 	</pipeline>
 	<objects>
 		<object type="texture" path="Textures\17274108e807373b99c46a573c78580b.jpg" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
@@ -82,13 +149,13 @@
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="property" name="Planet" item="pipe" />
-		<entry type="file" name="Planet" shader="vs" />
-		<entry type="file" name="Planet" shader="ps" />
+		<entry type="file" name="BlackHole" shader="vs" />
+		<entry type="file" name="BlackHole" shader="ps" />
+		<entry type="pinned" name="Thing" owner="BlackHole" />
 		<entry type="camera" fp="false">
-			<distance>7</distance>
-			<pitch>8</pitch>
-			<yaw>306</yaw>
+			<distance>18</distance>
+			<pitch>7</pitch>
+			<yaw>276</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
