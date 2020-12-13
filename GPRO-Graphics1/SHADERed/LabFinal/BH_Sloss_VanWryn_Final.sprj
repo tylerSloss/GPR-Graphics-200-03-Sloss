@@ -99,6 +99,16 @@
 					<height>1</height>
 					<depth>1</depth>
 					<pitch>1.57079637</pitch>
+					<z>-0.0109989643</z>
+					<topology>TriangleList</topology>
+				</item>
+				<item name="BlckHle" type="geometry">
+					<type>Sphere</type>
+					<width>1</width>
+					<height>1</height>
+					<depth>1</depth>
+					<y>1.03900123</y>
+					<z>-1.6263411</z>
 					<topology>TriangleList</topology>
 				</item>
 			</items>
@@ -118,6 +128,11 @@
 						<value>2</value>
 					</row>
 				</value>
+				<value variable="Thing" for="BlckHle">
+					<row>
+						<value>3</value>
+					</row>
+				</value>
 			</itemvalues>
 			<variables>
 				<variable type="float" name="Time" system="Time" />
@@ -130,7 +145,7 @@
 				<variable type="float4x4" name="uModelMat" system="GeometryTransform" />
 				<variable type="float4x4" name="uProjMat" system="Projection" />
 				<variable type="float4x4" name="uViewProjMat" system="ViewProjection" />
-				<variable type="float4x4" name="uInvModelMat" system="GeometryTransform" />
+				<variable type="float4x4" name="uInvModMat" invert="true" system="GeometryTransform" />
 			</variables>
 			<macros />
 		</pass>
@@ -138,13 +153,16 @@
 	<objects>
 		<object type="texture" path="Textures\17274108e807373b99c46a573c78580b.jpg" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
 			<bind slot="1" name="Planet" />
+			<bind slot="1" name="BlackHole" />
 		</object>
 		<object type="texture" path="Textures\slightlylessdumbskystars.jpg" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat" />
 		<object type="texture" path="Textures\Sun_texture.jpg" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
 			<bind slot="0" name="Planet" />
+			<bind slot="0" name="BlackHole" />
 		</object>
 		<object type="texture" path="Textures\2k_mercury.jpg" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
 			<bind slot="2" name="Planet" />
+			<bind slot="2" name="BlackHole" />
 		</object>
 	</objects>
 	<cameras />
@@ -153,9 +171,9 @@
 		<entry type="file" name="BlackHole" shader="ps" />
 		<entry type="pinned" name="Thing" owner="BlackHole" />
 		<entry type="camera" fp="false">
-			<distance>18</distance>
-			<pitch>7</pitch>
-			<yaw>276</yaw>
+			<distance>23</distance>
+			<pitch>1</pitch>
+			<yaw>326</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />

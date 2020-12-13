@@ -14,7 +14,7 @@ layout (location = 2) in vec4 aTexcoord;
 
 //TRANSFORM UNIFOMS
 uniform mat4 uModelMat;
-uniform mat4 uInvModelMat;
+uniform mat4 uInvModMat;
 uniform mat4 uViewMat;
 uniform mat4 uProjMat;
 uniform mat4 uViewProjMat;
@@ -176,19 +176,25 @@ void main()
 	alteration[1] = vec4(0.0, 1.0, 0.0, 0.0);
 	alteration[2] = vec4(0.0, 0.0, 1.0, 0.0);
 	alteration[3] = vec4(0.0, 0.0, 0.0, 1.0);
-	if(Thing == 1.0)
+	if(Thing == 1)
 	{
 		alteration = orbit;
 	}
-	else if (Thing == 2.0)
+	else if (Thing == 2)
 	{
 		alteration = orbit2;
 	}	
+	
 	mat4 modlViewMat = uViewMat * uModelMat * alteration * revolve;		
 	vec4 pos_view = modlViewMat * aPosition;
 	vec4 pos_clip = uProjMat * pos_view;
+	if (Thing == 4)
+	{
+		modlViewMat = uInvModMat * uModelMat * alteration * revolve;
+	}
 	gl_Position = pos_clip;
-	vPos = aPosition;
+	
+	
 	
 	
 	
