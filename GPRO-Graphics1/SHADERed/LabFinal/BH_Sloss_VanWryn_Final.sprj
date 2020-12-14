@@ -52,6 +52,32 @@
 						<value>2</value>
 					</row>
 				</value>
+				<value variable="uProjMat" for="Mun">
+					<row>
+						<value>2.59092951</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>2.41421342</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>-1.00019991</value>
+						<value>-1</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>-0.20002</value>
+						<value>0</value>
+					</row>
+				</value>
 			</itemvalues>
 			<variables>
 				<variable type="float" name="Time" system="Time" />
@@ -108,7 +134,7 @@
 					<height>1</height>
 					<depth>1</depth>
 					<y>1.03900123</y>
-					<z>-1.6263411</z>
+					<z>-1.62600005</z>
 					<topology>TriangleList</topology>
 				</item>
 			</items>
@@ -133,6 +159,32 @@
 						<value>3</value>
 					</row>
 				</value>
+				<value variable="uProjMat" for="BlckHle">
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+				</value>
 			</itemvalues>
 			<variables>
 				<variable type="float" name="Time" system="Time" />
@@ -145,7 +197,7 @@
 				<variable type="float4x4" name="uModelMat" system="GeometryTransform" />
 				<variable type="float4x4" name="uProjMat" system="Projection" />
 				<variable type="float4x4" name="uViewProjMat" system="ViewProjection" />
-				<variable type="float4x4" name="uInvModMat" invert="true" system="GeometryTransform" />
+				<variable type="float4x4" name="uInvModMat" system="GeometryTransform" />
 			</variables>
 			<macros />
 		</pass>
@@ -164,16 +216,21 @@
 			<bind slot="2" name="Planet" />
 			<bind slot="2" name="BlackHole" />
 		</object>
+		<object type="texture" path="" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
+			<bind slot="3" name="BlackHole" />
+		</object>
 	</objects>
 	<cameras />
 	<settings>
 		<entry type="file" name="BlackHole" shader="vs" />
 		<entry type="file" name="BlackHole" shader="ps" />
+		<entry type="file" name="Planet" shader="vs" />
+		<entry type="file" name="Planet" shader="ps" />
 		<entry type="pinned" name="Thing" owner="BlackHole" />
 		<entry type="camera" fp="false">
-			<distance>23</distance>
-			<pitch>1</pitch>
-			<yaw>326</yaw>
+			<distance>15</distance>
+			<pitch>20</pitch>
+			<yaw>8</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />

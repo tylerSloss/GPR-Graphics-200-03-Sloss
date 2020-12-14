@@ -20,7 +20,7 @@ in vec4 vTexcoord;
 // EXAMPLE: Some uniform in a program.
 //-------------------------------
 // Some texture in the vertex shader:
-layout (binding = 0) uniform sampler2D uPlanets[3];
+layout (binding = 0) uniform sampler2D uPlanets[4];
 //-------------------------------
 //thing for differentiation
 uniform int Thing;

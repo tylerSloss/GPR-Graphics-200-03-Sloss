@@ -22,7 +22,7 @@ uniform mat4 uViewProjMat;
 // EXAMPLE: Some uniform in a program.
 //-------------------------------
 // Some texture in the vertex shader:
-uniform sampler2D uPlanetsList[3];
+uniform sampler2D uPlanetsList[4];
 //-------------------------------
 //time for motion
 uniform float Time;
@@ -156,43 +156,71 @@ void main()
 	//Position pipelinemat4 revolve amd orbit;
 	float erthOrbitRad = 2.0;
 	float munOrbitRad = 0.5;
+	mat4 orbits[4];
+	mat4 alterations[4];
 	mat4 revolve;
 	revolve[0] = vec4(cos(Time), sin(Time), 0, 0);
 	revolve[1] = vec4(-sin(Time), cos(Time), 0, 0);
 	revolve[2] = vec4(0, 0, 1, 0);
 	revolve[3] = vec4(0, 0, 0, 1);
-	mat4 orbit;
-	orbit[0] = vec4(1, 0, 0, 0);
-	orbit[1] = vec4(0, 1, 0, 0);
-	orbit[2] = vec4(0, 0, 1, 0);
-	orbit[3] = vec4(erthOrbitRad * sin(Time), erthOrbitRad * cos(Time), 0, 1);
-	mat4 orbit2;
-	orbit2[0] = vec4(1, 0, 0, 0);
-	orbit2[1] = vec4(0, 1, 0, 0);
-	orbit2[2] = vec4(0, 0, 1, 0);
-	orbit2[3] = vec4(erthOrbitRad * sin(Time) + munOrbitRad * sin(3.0 * Time), erthOrbitRad * cos(Time) + munOrbitRad * cos(3.0 * Time), 0, 1);
-	mat4 alteration;
-	alteration[0] = vec4(1.0, 0.0, 0.0, 0.0);
-	alteration[1] = vec4(0.0, 1.0, 0.0, 0.0);
-	alteration[2] = vec4(0.0, 0.0, 1.0, 0.0);
-	alteration[3] = vec4(0.0, 0.0, 0.0, 1.0);
-	if(Thing == 1)
-	{
-		alteration = orbit;
-	}
-	else if (Thing == 2)
-	{
-		alteration = orbit2;
-	}	
 	
-	mat4 modlViewMat = uViewMat * uModelMat * alteration * revolve;		
+	alterations[0][0] = vec4(0.5, 0.0, 0.0, 0.0);
+	alterations[0][1] = vec4(0.0, 0.5, 0.0, 0.0);
+	alterations[0][2] = vec4(0.0, 0.0, 0.5, 0.0);
+	alterations[0][3] = vec4(0.0, 0.0, 0.0, 1.0);
+	
+	alterations[1][0] = vec4(0.2, 0.0, 0.0, 0.0);
+	alterations[1][1] = vec4(0.0, 0.2, 0.0, 0.0);
+	alterations[1][2] = vec4(0.0, 0.0, 0.2, 0.0);
+	alterations[1][3] = vec4(0.0, 0.0, 0.0, 1.0);
+	
+	alterations[2][0] = vec4(0.1, 0.0, 0.0, 0.0);
+	alterations[2][1] = vec4(0.0, 0.1, 0.0, 0.0);
+	alterations[2][2] = vec4(0.0, 0.0, 0.1, 0.0);
+	alterations[2][3] = vec4(0.0, 0.0, 0.0, 1.0);
+	
+	alterations[3][0] = vec4(0.1, 0.0, 0.0, 0.0);
+	alterations[3][1] = vec4(0.0, 0.1, 0.0, 0.0);
+	alterations[3][2] = vec4(0.0, 0.0, 0.1, 0.0);
+	alterations[3][3] = vec4(0.0, 0.0, 0.0, 1.0);
+	
+	orbits[0][0] = vec4(1.0, 0.0, 0.0, 0.0);
+	orbits[0][1] = vec4(0.0, 1.0, 0.0, 0.0);
+	orbits[0][2] = vec4(0.0, 0.0, 1.0, 0.0);
+	orbits[0][3] = vec4(0.0, 0.0, 0.0, 1.0);
+	
+	orbits[1][0] = vec4(1, 0, 0, 0);
+	orbits[1][1] = vec4(0, 1, 0, 0);
+	orbits[1][2] = vec4(0, 0, 1, 0);
+	orbits[1][3] = vec4(erthOrbitRad * sin(Time), erthOrbitRad * cos(Time), 0, 1);
+	
+	orbits[2][0] = vec4(1, 0, 0, 0);
+	orbits[2][1] = vec4(0, 1, 0, 0);
+	orbits[2][2] = vec4(0, 0, 1, 0);
+	orbits[2][3] = vec4(erthOrbitRad * sin(Time) + munOrbitRad * sin(3.0 * Time), erthOrbitRad * cos(Time) + munOrbitRad * cos(3.0 * Time), 0, 1);
+
+	orbits[3][0] = vec4(1.0, 0.0, 0.0, 0.0);
+	orbits[3][1] = vec4(0.0, 1.0, 0.0, 0.0);
+	orbits[3][2] = vec4(0.0, 0.0, 1.0, 0.0);
+	orbits[3][3] = vec4(0.0, 0.0, 0.0, 1.0);
+	
+	mat4 bhModlMat;
+	bhModlMat[0] = vec4(1.0, 0.0, 0.0, 0.0);
+	bhModlMat[1] = vec4(0.0, 1.0, 0.0, 0.0);
+	bhModlMat[2] = vec4(0.0, 0.0, 1.0, 0.0);
+	bhModlMat[3] = vec4(0.0, 1.039, -2.626, 1.0);
+	
+	mat4 bhProjMat;
+	bhProjMat[0] = vec4(2.591, 0.0, 0.0, 0.0);
+	bhProjMat[1] = vec4(0.0, 2.414, 0.0, 0.0);
+	bhProjMat[2] = vec4(0.0, 0.0, -1.0, -1.0);
+	bhProjMat[3] = vec4(0.0, 0.0, -0.2, 0.0);
+		
+	mat4 modlViewMat = inverse(bhModlMat)/* uViewMat*/ * uModelMat * orbits[Thing] * alterations[Thing] * revolve;		
 	vec4 pos_view = modlViewMat * aPosition;
-	vec4 pos_clip = uProjMat * pos_view;
-	if (Thing == 4)
-	{
-		modlViewMat = uInvModMat * uModelMat * alteration * revolve;
-	}
-	gl_Position = pos_clip;
+	vec4 pos_clip = bhProjMat * pos_view;
+	
+	gl_Position = pos_view;
 	
 	
 	
@@ -234,12 +262,12 @@ void main()
 	//gl_Position = /*uProjMat * modlViewMat * */ aTexcoord;
 		
 	//light setup
-	pointLight light1,light2,light3;
+	/*pointLight light1,light2,light3;
 	initLight(light1, vec3(-1.0,0.0,0.0),vec3(1.0,1.0,1.0),10.0);
 	initLight(light2, vec3(0.0,-1.0,1.0),vec3(1.0,1.0,1.0),10.0);
 	initLight(light3, vec3(1.0,0.0,-1.0),vec3(1.0,1.0,1.0),10.0);
 	
-	
+	*/
 	
 	//vTexcoord = vec4( lightCombo(light1,light2,light3,aNormal,aPosition.xyz,uv_atlas.xyz,nrm_view),1.0);
 

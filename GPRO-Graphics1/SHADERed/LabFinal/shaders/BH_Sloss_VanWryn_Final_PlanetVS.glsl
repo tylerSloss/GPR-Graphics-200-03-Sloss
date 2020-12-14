@@ -155,35 +155,43 @@ void main()
 	//Position pipelinemat4 revolve amd orbit;
 	float erthOrbitRad = 2.0;
 	float munOrbitRad = 0.5;
+	mat4 orbits[3];
+	mat4 alterations[3];
 	mat4 revolve;
 	revolve[0] = vec4(cos(Time), sin(Time), 0, 0);
 	revolve[1] = vec4(-sin(Time), cos(Time), 0, 0);
 	revolve[2] = vec4(0, 0, 1, 0);
 	revolve[3] = vec4(0, 0, 0, 1);
-	mat4 orbit;
-	orbit[0] = vec4(1, 0, 0, 0);
-	orbit[1] = vec4(0, 1, 0, 0);
-	orbit[2] = vec4(0, 0, 1, 0);
-	orbit[3] = vec4(erthOrbitRad * sin(Time), erthOrbitRad * cos(Time), 0, 1);
-	mat4 orbit2;
-	orbit2[0] = vec4(1, 0, 0, 0);
-	orbit2[1] = vec4(0, 1, 0, 0);
-	orbit2[2] = vec4(0, 0, 1, 0);
-	orbit2[3] = vec4(erthOrbitRad * sin(Time) + munOrbitRad * sin(3.0 * Time), erthOrbitRad * cos(Time) + munOrbitRad * cos(3.0 * Time), 0, 1);
-	mat4 alteration;
-	alteration[0] = vec4(1.0, 0.0, 0.0, 0.0);
-	alteration[1] = vec4(0.0, 1.0, 0.0, 0.0);
-	alteration[2] = vec4(0.0, 0.0, 1.0, 0.0);
-	alteration[3] = vec4(0.0, 0.0, 0.0, 1.0);
-	if(Thing == 1.0)
-	{
-		alteration = orbit;
-	}
-	else if (Thing == 2.0)
-	{
-		alteration = orbit2;
-	}	
-	mat4 modlViewMat = uViewMat * uModelMat * alteration * revolve;		
+	
+	alterations[0][0] = vec4(0.5, 0.0, 0.0, 0.0);
+	alterations[0][1] = vec4(0.0, 0.5, 0.0, 0.0);
+	alterations[0][2] = vec4(0.0, 0.0, 0.5, 0.0);
+	alterations[0][3] = vec4(0.0, 0.0, 0.0, 1.0);
+	
+	alterations[1][0] = vec4(0.2, 0.0, 0.0, 0.0);
+	alterations[1][1] = vec4(0.0, 0.2, 0.0, 0.0);
+	alterations[1][2] = vec4(0.0, 0.0, 0.2, 0.0);
+	alterations[1][3] = vec4(0.0, 0.0, 0.0, 1.0);
+	
+	alterations[2][0] = vec4(0.1, 0.0, 0.0, 0.0);
+	alterations[2][1] = vec4(0.0, 0.1, 0.0, 0.0);
+	alterations[2][2] = vec4(0.0, 0.0, 0.1, 0.0);
+	alterations[2][3] = vec4(0.0, 0.0, 0.0, 1.0);
+	
+	orbits[0][0] = vec4(1.0, 0.0, 0.0, 0.0);
+	orbits[0][1] = vec4(0.0, 1.0, 0.0, 0.0);
+	orbits[0][2] = vec4(0.0, 0.0, 1.0, 0.0);
+	orbits[0][3] = vec4(0.0, 0.0, 0.0, 1.0);
+	orbits[1][0] = vec4(1, 0, 0, 0);
+	orbits[1][1] = vec4(0, 1, 0, 0);
+	orbits[1][2] = vec4(0, 0, 1, 0);
+	orbits[1][3] = vec4(erthOrbitRad * sin(Time), erthOrbitRad * cos(Time), 0, 1);
+	orbits[2][0] = vec4(1, 0, 0, 0);
+	orbits[2][1] = vec4(0, 1, 0, 0);
+	orbits[2][2] = vec4(0, 0, 1, 0);
+	orbits[2][3] = vec4(erthOrbitRad * sin(Time) + munOrbitRad * sin(3.0 * Time), erthOrbitRad * cos(Time) + munOrbitRad * cos(3.0 * Time), 0, 1);
+	
+	mat4 modlViewMat = uViewMat * uModelMat * orbits[Thing] * alterations[Thing] * revolve;		
 	vec4 pos_view = modlViewMat * aPosition;
 	vec4 pos_clip = uProjMat * pos_view;
 	gl_Position = pos_clip;
