@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project version="2">
 	<pipeline>
-		<pass name="Planet" type="shader" active="false">
+		<pass name="Planet" type="shader" active="true" collapsed="true">
 			<shader type="vs" path="shaders\BH_Sloss_VanWryn_Final_PlanetVS.glsl" entry="main" />
 			<shader type="ps" path="shaders\BH_Sloss_VanWryn_Final_PlanetPS.glsl" entry="main" />
 			<inputlayout>
@@ -9,7 +9,7 @@
 				<item value="Normal" semantic="NORMAL" />
 				<item value="Texcoord" semantic="TEXCOORD0" />
 			</inputlayout>
-			<rendertexture />
+			<rendertexture name="MilkyWay" />
 			<items>
 				<item name="Sun" type="geometry">
 					<type>Sphere</type>
@@ -54,7 +54,7 @@
 				</value>
 				<value variable="uProjMat" for="Mun">
 					<row>
-						<value>2.59092951</value>
+						<value>4.49364376</value>
 						<value>0</value>
 						<value>0</value>
 						<value>0</value>
@@ -101,7 +101,7 @@
 				<item value="Normal" semantic="NORMAL" />
 				<item value="Texcoord" semantic="TEXCOORD0" />
 			</inputlayout>
-			<rendertexture />
+			<rendertexture name="WarpedMilkeyWay" />
 			<items>
 				<item name="Sun2" type="geometry">
 					<type>Sphere</type>
@@ -135,6 +135,7 @@
 					<depth>1</depth>
 					<y>1.03900123</y>
 					<z>-1.62600005</z>
+					<instanced>true</instanced>
 					<topology>TriangleList</topology>
 				</item>
 			</items>
@@ -201,13 +202,167 @@
 			</variables>
 			<macros />
 		</pass>
+		<pass name="BrightPass" type="shader" active="true">
+			<shader type="vs" path="shaders\BrightPassVS.glsl" entry="main" />
+			<shader type="ps" path="shaders\BrightPassPS.glsl" entry="main" />
+			<inputlayout>
+				<item value="Position" semantic="POSITION" />
+				<item value="Normal" semantic="NORMAL" />
+				<item value="Texcoord" semantic="TEXCOORD0" />
+			</inputlayout>
+			<rendertexture name="MilkeyerWay" />
+			<items>
+				<item name="BrightView" type="geometry">
+					<type>ScreenQuadNDC</type>
+					<width>1</width>
+					<height>1</height>
+					<depth>1</depth>
+					<topology>TriangleList</topology>
+				</item>
+			</items>
+			<itemvalues />
+			<variables>
+				<variable type="float4x4" name="uModelMat" system="GeometryTransform" />
+				<variable type="float4x4" name="uViewMat">
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+				</variable>
+				<variable type="float4x4" name="uProjMat">
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+				</variable>
+			</variables>
+			<macros />
+		</pass>
+		<pass name="BloomPass" type="shader" active="true">
+			<shader type="vs" path="shaders\BloomPassVS.glsl" entry="main" />
+			<shader type="ps" path="shaders\BloomPassPS.glsl" entry="main" />
+			<inputlayout>
+				<item value="Position" semantic="POSITION" />
+				<item value="Normal" semantic="NORMAL" />
+				<item value="Texcoord" semantic="TEXCOORD0" />
+			</inputlayout>
+			<rendertexture />
+			<items>
+				<item name="BloomView" type="geometry">
+					<type>ScreenQuadNDC</type>
+					<width>1</width>
+					<height>1</height>
+					<depth>1</depth>
+					<topology>TriangleList</topology>
+				</item>
+			</items>
+			<itemvalues />
+			<variables>
+				<variable type="float4x4" name="uModelMat" system="GeometryTransform" />
+				<variable type="float4x4" name="uViewMat">
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+				</variable>
+				<variable type="float4x4" name="uProjMat">
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+					<row>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+						<value>0</value>
+					</row>
+				</variable>
+			</variables>
+			<macros />
+		</pass>
 	</pipeline>
 	<objects>
 		<object type="texture" path="Textures\17274108e807373b99c46a573c78580b.jpg" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
 			<bind slot="1" name="Planet" />
 			<bind slot="1" name="BlackHole" />
 		</object>
-		<object type="texture" path="Textures\slightlylessdumbskystars.jpg" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat" />
+		<object type="texture" path="Textures\slightlylessdumbskystars.jpg" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
+			<bind slot="1" name="BrightPass" />
+		</object>
 		<object type="texture" path="Textures\Sun_texture.jpg" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
 			<bind slot="0" name="Planet" />
 			<bind slot="0" name="BlackHole" />
@@ -216,21 +371,33 @@
 			<bind slot="2" name="Planet" />
 			<bind slot="2" name="BlackHole" />
 		</object>
-		<object type="texture" path="" vflip="false" min_filter="Linear" mag_filter="Nearest" wrap_s="Repeat" wrap_t="Repeat">
-			<bind slot="3" name="BlackHole" />
+		<object type="rendertexture" name="MilkyWay" rsize="1.000000,1.000000" clear="true">
+			<bind slot="0" name="BrightPass" />
+			<bind slot="1" name="BloomPass" />
 		</object>
+		<object type="rendertexture" name="MilkeyerWay" rsize="1.000000,1.000000" clear="true">
+			<bind slot="0" name="BloomPass" />
+		</object>
+		<object type="rendertexture" name="WarpedMilkeyWay" rsize="1.000000,1.000000" clear="true" />
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="file" name="BlackHole" shader="vs" />
-		<entry type="file" name="BlackHole" shader="ps" />
+		<entry type="property" name="Planet" item="pipe" />
+		<entry type="file" name="BrightPass" shader="vs" />
+		<entry type="file" name="BrightPass" shader="ps" />
 		<entry type="file" name="Planet" shader="vs" />
 		<entry type="file" name="Planet" shader="ps" />
+		<entry type="file" name="BloomPass" shader="vs" />
+		<entry type="file" name="BloomPass" shader="ps" />
+		<entry type="file" name="BlackHole" shader="vs" />
+		<entry type="file" name="BlackHole" shader="ps" />
 		<entry type="pinned" name="Thing" owner="BlackHole" />
+		<entry type="pinned" name="uViewMat" owner="BrightPass" />
+		<entry type="pinned" name="uProjMat" owner="BrightPass" />
 		<entry type="camera" fp="false">
-			<distance>15</distance>
-			<pitch>20</pitch>
-			<yaw>8</yaw>
+			<distance>6</distance>
+			<pitch>6</pitch>
+			<yaw>72</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
